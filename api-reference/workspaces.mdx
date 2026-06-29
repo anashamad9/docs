@@ -1,10 +1,10 @@
 ---
 title: "Workspaces API — create and manage workspaces"
 sidebarTitle: "Workspaces"
-description: "Create, retrieve, update, and delete Atmet workspaces. List and remove workspace members programmatically using the Workspaces REST API."
+description: "Create, retrieve, update, and delete Atmet workspaces. Invite, update, and remove workspace members programmatically using the Workspaces REST API."
 ---
 
-The Workspaces API gives you full programmatic control over workspaces and their membership. You can list every workspace your account belongs to, create new ones, update settings like name and avatar, and remove workspaces you own. The members sub-resource lets you inspect who has access to a workspace and remove members when necessary. All write operations on a workspace require you to be either the owner or an admin-level member.
+The Workspaces API gives you full programmatic control over workspaces and their membership. You can list every workspace your account belongs to, create new ones, update settings like name and plan, and remove workspaces you own. The members sub-resource lets you inspect who has access to a workspace, invite new members by email, update their roles, and remove them when necessary. All write operations on a workspace require you to be either the owner or an admin-level member.
 
 ---
 
@@ -26,8 +26,8 @@ The Workspaces API gives you full programmatic control over workspaces and their
   User ID of the workspace owner.
 </ResponseField>
 
-<ResponseField name="role" type="string" required>
-  The authenticated user's role in this workspace. Either `owner` or `member`. Returned when the workspace is fetched through the list endpoint.
+<ResponseField name="role" type="string">
+  The authenticated user's role in this workspace. Either `owner`, `admin`, or `member`. **Only present in the list workspaces response** — not returned when fetching a single workspace by ID.
 </ResponseField>
 
 <ResponseField name="avatar_url" type="string | null">
@@ -46,32 +46,33 @@ The Workspaces API gives you full programmatic control over workspaces and their
 
 ## The Member object
 
-<ResponseField name="id" type="string" required>
-  Unique identifier for the membership record (UUID).
-</ResponseField>
-
-<ResponseField name="user_id" type="string" required>
-  The user's unique identifier.
-</ResponseField>
-
 <ResponseField name="role" type="string" required>
-  The member's role in the workspace. Either `owner` or `member`.
-</ResponseField>
-
-<ResponseField name="email" type="string" required>
-  The member's email address.
-</ResponseField>
-
-<ResponseField name="full_name" type="string | null">
-  The member's display name, or `null` if not set.
-</ResponseField>
-
-<ResponseField name="avatar_url" type="string | null">
-  Absolute URL to the member's avatar, or `null` if none is set.
+  The member's role in the workspace. One of `owner`, `admin`, or `member`.
 </ResponseField>
 
 <ResponseField name="joined_at" type="string" required>
   ISO 8601 timestamp of when the member joined the workspace.
+</ResponseField>
+
+<ResponseField name="user" type="object" required>
+  Profile information for the member.
+  <Expandable title="user fields">
+    <ResponseField name="id" type="string" required>
+      The user's unique identifier (UUID).
+    </ResponseField>
+    <ResponseField name="email" type="string" required>
+      The member's email address.
+    </ResponseField>
+    <ResponseField name="full_name" type="string | null">
+      The member's display name, or `null` if not set.
+    </ResponseField>
+    <ResponseField name="avatar_url" type="string | null">
+      Absolute URL to the member's avatar, or `null` if none is set.
+    </ResponseField>
+    <ResponseField name="status" type="string" required>
+      The user's account status (e.g. `active`).
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 ---
@@ -162,8 +163,12 @@ POST /api/workspaces
   The display name for the new workspace. Must be a non-empty string.
 </ParamField>
 
-<ParamField body="country" type="string">
-  ISO 3166-1 alpha-2 country code to associate with the workspace (e.g. `"US"`). Optional.
+<ParamField body="plan" type="string">
+  Billing plan for the workspace. One of `free`, `pro`, or `enterprise`. Defaults to `free` when omitted.
+</ParamField>
+
+<ParamField body="avatar_url" type="string">
+  Absolute URL for the workspace avatar image. Must be a valid URL. Optional.
 </ParamField>
 
 **Response** — `201 Created`
@@ -183,7 +188,7 @@ curl -X POST https://atmet.ai/api/workspaces \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Acme Corp",
-    "country": "US"
+    "plan": "pro"
   }'
 ```
 
@@ -196,7 +201,7 @@ const response = await fetch("https://atmet.ai/api/workspaces", {
   },
   body: JSON.stringify({
     name: "Acme Corp",
-    country: "US",
+    plan: "pro",
   }),
 });
 
@@ -286,8 +291,8 @@ PATCH /api/workspaces/{id}
   New display name for the workspace.
 </ParamField>
 
-<ParamField body="country" type="string">
-  Updated ISO 3166-1 alpha-2 country code (e.g. `"DE"`).
+<ParamField body="plan" type="string">
+  Updated billing plan. One of `free`, `pro`, or `enterprise`.
 </ParamField>
 
 <ParamField body="avatar_url" type="string">
@@ -311,6 +316,7 @@ curl -X PATCH https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef12345678
   -H "Content-Type: application/json" \
   -d '{
     "name": "Acme Corp (Rebranded)",
+    "plan": "enterprise",
     "avatar_url": "https://example.com/avatars/acme-new.png"
   }'
 ```
@@ -326,6 +332,7 @@ const response = await fetch(`https://atmet.ai/api/workspaces/${workspaceId}`, {
   },
   body: JSON.stringify({
     name: "Acme Corp (Rebranded)",
+    plan: "enterprise",
     avatar_url: "https://example.com/avatars/acme-new.png",
   }),
 });
@@ -454,27 +461,227 @@ console.log(data.members);
   "data": {
     "members": [
       {
-        "id": "mem_xyz789",
-        "user_id": "user_abc123",
         "role": "owner",
-        "email": "alice@acme.com",
-        "full_name": "Alice Smith",
-        "avatar_url": "https://example.com/avatars/alice.png",
-        "joined_at": "2024-09-15T10:00:00.000Z"
+        "joined_at": "2024-09-15T10:00:00.000Z",
+        "user": {
+          "id": "user_abc123",
+          "email": "alice@acme.com",
+          "full_name": "Alice Smith",
+          "avatar_url": "https://example.com/avatars/alice.png",
+          "status": "active"
+        }
       },
       {
-        "id": "mem_uvw456",
-        "user_id": "user_def456",
         "role": "member",
-        "email": "bob@acme.com",
-        "full_name": "Bob Jones",
-        "avatar_url": null,
-        "joined_at": "2024-10-01T08:30:00.000Z"
+        "joined_at": "2024-10-01T08:30:00.000Z",
+        "user": {
+          "id": "user_def456",
+          "email": "bob@acme.com",
+          "full_name": "Bob Jones",
+          "avatar_url": null,
+          "status": "active"
+        }
       }
     ]
   }
 }
 ```
+
+---
+
+## Invite a workspace member
+
+Sends an email invitation to a user to join the workspace. You must be the workspace owner or an admin to call this endpoint. If the invited email already has a pending invitation for this workspace, the request returns `409 Conflict`. The endpoint also enforces the workspace seat limit — if the number of active members plus pending invitations would exceed it, the request returns `400 Bad Request`.
+
+```
+POST /api/workspaces/{id}/members
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace to invite the member into.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="email" type="string" required>
+  The email address of the person to invite. Must be a valid email format.
+</ParamField>
+
+<ParamField body="role" type="string">
+  The role to assign once the invitation is accepted. Currently only `"member"` is accepted. Defaults to `"member"` when omitted.
+</ParamField>
+
+**Response** — `201 Created`
+
+<ResponseField name="invitation" type="object" required>
+  The created invitation record.
+  <Expandable title="invitation fields">
+    <ResponseField name="id" type="string" required>
+      Unique identifier for the invitation (UUID).
+    </ResponseField>
+    <ResponseField name="workspace_id" type="string" required>
+      The workspace the invitation belongs to.
+    </ResponseField>
+    <ResponseField name="email" type="string" required>
+      The email address the invitation was sent to.
+    </ResponseField>
+    <ResponseField name="role" type="string" required>
+      The role the invitee will receive on acceptance.
+    </ResponseField>
+    <ResponseField name="status" type="string" required>
+      Invitation status. `pending` immediately after creation.
+    </ResponseField>
+    <ResponseField name="token" type="string" required>
+      The accept token embedded in the invitation email link.
+    </ResponseField>
+    <ResponseField name="created_at" type="string" required>
+      ISO 8601 timestamp of when the invitation was created.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="invitationEmailSent" type="boolean" required>
+  `true` if the invitation email was delivered successfully.
+</ResponseField>
+
+<ResponseField name="invitationEmailWarning" type="string | null" required>
+  `null` when the email was sent. Contains a human-readable reason string if delivery failed (the invitation record is still created).
+</ResponseField>
+
+```json
+{
+  "data": {
+    "invitation": {
+      "id": "inv_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "workspace_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "email": "charlie@acme.com",
+      "role": "member",
+      "status": "pending",
+      "token": "eyJhbGciOiJIUzI1NiJ9...",
+      "created_at": "2024-12-10T11:00:00.000Z"
+    },
+    "invitationEmailSent": true,
+    "invitationEmailWarning": null
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X POST https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890/members \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "charlie@acme.com",
+    "role": "member"
+  }'
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(
+  `https://atmet.ai/api/workspaces/${workspaceId}/members`,
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer atmet_your_api_key",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: "charlie@acme.com",
+      role: "member",
+    }),
+  }
+);
+
+const { data } = await response.json();
+console.log(data.invitation.id);       // invitation UUID
+console.log(data.invitationEmailSent); // true
+```
+</CodeGroup>
+
+---
+
+## Update a member's role
+
+Updates the role of an existing workspace member. You must be the workspace owner or an admin. You cannot change the role of the workspace owner — doing so returns `400 Bad Request`.
+
+```
+PATCH /api/workspaces/{id}/members/{userId}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace.
+</ParamField>
+
+<ParamField path="userId" type="string" required>
+  The user ID of the member whose role to update.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="role" type="string" required>
+  The new role to assign. Currently only `"member"` is accepted.
+</ParamField>
+
+**Response**
+
+```json
+{
+  "data": {
+    "member": MemberRecord
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X PATCH \
+  https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890/members/user_def456 \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"role": "member"}'
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+const userId = "user_def456";
+
+const response = await fetch(
+  `https://atmet.ai/api/workspaces/${workspaceId}/members/${userId}`,
+  {
+    method: "PATCH",
+    headers: {
+      "Authorization": "Bearer atmet_your_api_key",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ role: "member" }),
+  }
+);
+
+const { data } = await response.json();
+console.log(data.member);
+```
+</CodeGroup>
 
 ---
 
@@ -554,8 +761,9 @@ All errors follow the standard Atmet error envelope.
 
 | HTTP status | When it occurs |
 |---|---|
-| `400 Bad Request` | Invalid request body, or attempting to remove the workspace owner |
+| `400 Bad Request` | Invalid request body, attempting to remove the workspace owner, or seat limit reached |
 | `401 Unauthorized` | Missing or invalid Bearer token |
 | `403 Forbidden` | Valid token but you are not the owner or an admin (for write operations) |
 | `404 Not Found` | The workspace or member ID does not exist, or you are not a member |
+| `409 Conflict` | A pending invitation for the given email already exists in this workspace |
 | `500 Internal Server Error` | Unexpected server-side failure |

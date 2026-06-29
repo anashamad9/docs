@@ -14,7 +14,7 @@ Navigate to **Workflows** in the sidebar to see every automation in your workspa
 |---|---|---|
 | `active` | Running | The workflow is live and executing on its schedule. |
 | `draft` | In review | The workflow has been created but not yet published. |
-| `inactive` | Completed | The workflow has been deactivated or finished its run. |
+| `inactive` | Done | The workflow has been deactivated or finished its run. |
 
 Click any workflow in the list to open it on the canvas. To delete a workflow, open the **⋯** menu on the right side of its row and select **Delete task**.
 
@@ -37,7 +37,7 @@ The canvas is a large, scrollable workspace where nodes sit at absolute coordina
 | Action | Shortcut |
 |---|---|
 | Undo | Ctrl+Z / ⌘+Z |
-| Redo | Ctrl+Y / ⌘+Y |
+| Redo | Ctrl+Y / ⌘+Shift+Z |
 | Copy selected node | Ctrl+C / ⌘+C |
 | Paste node | Ctrl+V / ⌘+V |
 | Duplicate selected node | Ctrl+D / ⌘+D |
@@ -145,7 +145,7 @@ Open the **Execution Log** from the workflow toolbar to see a full breakdown of 
 The log shows:
 - **Latest run** timestamp and **completion percentage** (done steps ÷ total nodes)
 - **Tokens processed** — total token count across all nodes
-- **Wire count** — number of connections in the current graph
+- **Connections** — number of wires in the current graph
 - **Node run details** — per-node status, provider, owner, and token count
 
 Each node reports one of four execution statuses:

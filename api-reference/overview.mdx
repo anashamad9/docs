@@ -1,26 +1,22 @@
 ---
-title: "Atmet REST API — overview and base URL"
+title: "Atmet REST API: base URL, request format, and conventions"
 sidebarTitle: "Overview"
-description: "Explore the Atmet REST API: base URL conventions, JSON request and response shapes, standard error format, and HTTP status codes."
+description: "Explore the Atmet REST API: base URL conventions, JSON request and response envelope, standard error codes, and HTTP status codes."
 ---
 
 The Atmet REST API gives you programmatic access to every resource in your workspace — chats, agents, members, API keys, and more. All endpoints accept and return JSON, follow a consistent response envelope, and authenticate via bearer tokens. This reference covers the conventions every endpoint shares; individual endpoint pages describe the specific fields and behaviors for each resource.
-
-<Note>
-  The Atmet API is currently in **alpha**. Endpoint paths, request shapes, and response fields may change between releases. Pin your integration to a specific Atmet version and review the changelog before upgrading.
-</Note>
 
 ## Base URL
 
 Every endpoint is relative to the base URL of your Atmet deployment. If you are running a self-hosted instance, substitute your own domain:
 
-```
+```text
 https://your-atmet-instance.com/api
 ```
 
 For example, the API keys list endpoint is available at:
 
-```
+```text
 https://your-atmet-instance.com/api/api-keys
 ```
 

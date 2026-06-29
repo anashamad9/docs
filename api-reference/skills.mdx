@@ -43,6 +43,10 @@ Every endpoint that returns a skill yields the following fields.
   Whether the skill is usable. One of `active` or `inactive`.
 </ResponseField>
 
+<ResponseField name="definition" type="object">
+  Optional configuration object for the skill. Use this to supply structured parameters your skill implementation requires (e.g. API endpoint, model settings). The shape is freeform — use whatever keys your skill expects.
+</ResponseField>
+
 <ResponseField name="created_by" type="string" required>
   UUID of the user who created the skill.
 </ResponseField>
@@ -162,6 +166,14 @@ POST /api/skills
 
 <ParamField body="type" type="string" required>
   The capability category. Must be one of `action`, `trigger`, `tool`, or `agent`.
+</ParamField>
+
+<ParamField body="definition" type="object">
+  Optional configuration object for the skill. Supply any key-value pairs your skill implementation requires.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Initial lifecycle status. Must be `active` or `inactive`. Defaults to `active`.
 </ParamField>
 
 <CodeGroup>
@@ -289,7 +301,7 @@ console.log(data.skill);
 
 ## Update a skill
 
-Modify the name, description, or status of an existing skill. All fields are optional; only the fields you include are changed.
+Modify the name, description, type, definition, or status of an existing skill. All fields are optional; only the fields you include are changed.
 
 ```
 PATCH /api/skills/{id}
@@ -309,6 +321,14 @@ PATCH /api/skills/{id}
 
 <ParamField body="description" type="string">
   Updated description of what the skill does.
+</ParamField>
+
+<ParamField body="type" type="string">
+  Updated capability category. Must be one of `action`, `trigger`, `tool`, or `agent`.
+</ParamField>
+
+<ParamField body="definition" type="object">
+  Replacement configuration object for the skill.
 </ParamField>
 
 <ParamField body="status" type="string">
@@ -459,7 +479,17 @@ POST /api/chats/{id}/skills
   UUID of the skill to link.
 </ParamField>
 
-Returns `201` on success. Returns `409` if the skill is already linked to the chat.
+Returns `201` on success:
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+Returns `409` if the skill is already linked to the chat.
 
 ### Unlink a skill from a chat
 

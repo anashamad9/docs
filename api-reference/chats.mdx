@@ -28,7 +28,7 @@ Every endpoint that returns a chat yields the following fields.
 </ResponseField>
 
 <ResponseField name="title" type="string" required>
-  Human-readable title. Auto-generated from the first message when not supplied at creation time.
+  Human-readable title for the chat.
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
@@ -114,8 +114,8 @@ POST /api/chats
 
 ### Request body
 
-<ParamField body="title" type="string">
-  Display name for the chat. When omitted, Atmet generates a title automatically after the first exchange.
+<ParamField body="title" type="string" required>
+  Display name for the chat.
 </ParamField>
 
 <CodeGroup>
@@ -220,22 +220,30 @@ console.log(data.chat);
       "created_at": "2025-01-15T10:30:00Z",
       "updated_at": "2025-01-15T11:45:00Z"
     },
-    "users": [...],
-    "skills": [...],
-    "automations": [...],
-    "schedules": [...]
+    "users": [
+      { "user": { "id": "usr_01j9x...", "email": "alex@example.com", "full_name": "Alex Kim" } }
+    ],
+    "skills": [
+      { "skill": { "id": "skl_abc...", "name": "Summarise thread", "type": "agent", "status": "active" } }
+    ],
+    "automations": [
+      { "automation": { "id": "aut_abc...", "name": "Weekly digest", "status": "active" } }
+    ],
+    "schedules": [
+      { "schedule": { "id": "sch_abc...", "name": "Monday 9am", "cron_expression": "0 9 * * 1", "status": "active" } }
+    ]
   }
 }
 ```
 
-<ResponseField name="data.chat" type="Chat" required>
-  The Chat object.
+<ResponseField name="data.chat" type="object" required>
+  The Chat object. Includes all standard Chat fields plus `workspace_id` — the UUID of the workspace this chat belongs to.
 </ResponseField>
 
 <ResponseField name="data.users" type="object[]" required>
-  Participants linked to this chat.
+  Participants linked to this chat. Each entry is `{ "user": { ... } }`.
 
-  <Expandable title="User fields">
+  <Expandable title="user fields">
     <ResponseField name="id" type="string">UUID of the user.</ResponseField>
     <ResponseField name="email" type="string">Email address of the user.</ResponseField>
     <ResponseField name="full_name" type="string">Display name of the user.</ResponseField>
@@ -243,15 +251,15 @@ console.log(data.chat);
 </ResponseField>
 
 <ResponseField name="data.skills" type="object[]" required>
-  Skills attached to this chat. Each entry contains a summary of the linked Skill object (`id`, `name`, `type`, `status`).
+  Skills attached to this chat. Each entry is `{ "skill": { id, name, type, status } }`.
 </ResponseField>
 
 <ResponseField name="data.automations" type="object[]" required>
-  Automations attached to this chat. Each entry contains a summary of the linked Automation object (`id`, `name`, `status`).
+  Automations attached to this chat. Each entry is `{ "automation": { id, name, status } }`.
 </ResponseField>
 
 <ResponseField name="data.schedules" type="object[]" required>
-  Schedules attached to this chat. Each entry contains `id`, `name`, `cron_expression`, and `status`.
+  Schedules attached to this chat. Each entry is `{ "schedule": { id, name, cron_expression, status } }`.
 </ResponseField>
 
 ---
@@ -527,10 +535,6 @@ POST /api/chats/{id}/messages
 
 <ParamField body="content" type="string" required>
   Text content of the message to send.
-</ParamField>
-
-<ParamField body="role" type="string">
-  Role of the sender. Defaults to `user`. Accepted value: `user`.
 </ParamField>
 
 <CodeGroup>

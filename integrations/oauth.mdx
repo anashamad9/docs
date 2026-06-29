@@ -1,7 +1,7 @@
 ---
 title: "Connect OAuth integrations: Gmail, Slack, GitHub, and more"
 sidebarTitle: "OAuth Apps"
-description: "Authorize Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord using OAuth 2.0 — no passwords shared, revoke access any time."
+description: "Authorize Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord using OAuth 2.0. No passwords are shared with Atmet, and you can revoke access any time."
 ---
 
 OAuth 2.0 integrations let you grant Atmet access to an external app through that provider's own sign-in screen. You never share a password with Atmet. Instead, you approve a specific set of permissions and the provider issues Atmet a secure access token scoped only to what your workflows need. Seven of Atmet's integrations use OAuth: Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord.
@@ -47,7 +47,7 @@ Each OAuth integration requests the minimum set of scopes needed to power its tr
     |---|---|
     | `gmail.modify` | Read, label, and update message metadata when workflows run. |
     | `gmail.send` | Send outbound emails from workflow actions you approve. |
-    | `userinfo.email` | Identify which mailbox is linked to this workspace. |
+    | `userinfo.email` | Identify which mailbox should be linked to this workspace. |
 
     **Triggers:** New email received · Email labeled
 

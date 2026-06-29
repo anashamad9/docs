@@ -1,7 +1,7 @@
 ---
 title: "Workspaces: organizing teams and projects in Atmet"
 sidebarTitle: "Workspaces"
-description: "A workspace is Atmet's top-level container for your team's automations, skills, integrations, and members. Learn how to create, configure, and manage workspaces."
+description: "A workspace is Atmet's top-level container for your team's automations, skills, integrations, and members. Learn how to create, configure, and manage them."
 ---
 
 A workspace in Atmet is the shared environment where your team's work lives. Every automation you build, every app you connect, every skill you create, and every member you invite belongs to a specific workspace. Think of it as a single, unified space for one team or project — with its own settings, its own connected apps, and its own access controls.
@@ -42,7 +42,7 @@ Every workspace member has one of two roles.
 The person who creates a workspace is always its owner. Ownership cannot be transferred in the current alpha release.
 
 <Warning>
-  Only **owners** can invite new members, change member roles, or remove someone from a workspace. If you need to manage your team's access, make sure you are signed in as an owner.
+  Only **owners** can invite new members, change member roles, or remove other members from a workspace. The workspace owner's role cannot be changed and the owner cannot be removed. If you need to manage your team's access, make sure you are signed in as an owner.
 </Warning>
 
 ## Inviting members
@@ -65,6 +65,10 @@ Atmet sends the invitee an email with a personalised invitation link. The link i
 
 To remove someone from your workspace, navigate to **Workspace Settings → Members**, find their row, and click **Remove**. Their access is revoked immediately. Any workflows or skills they created remain in the workspace.
 
+<Note>
+  Members can also remove themselves from a workspace at any time by navigating to **Workspace Settings → Members** and clicking **Leave workspace** on their own row. The workspace owner cannot be removed.
+</Note>
+
 ## Workspace settings
 
 Owners can update the following settings at any time from **Workspace Settings → General**:
@@ -77,14 +81,14 @@ Click **Save changes** after editing any field to apply the update.
 
 ## Workspace ID and API access
 
-Every workspace has a unique ID (a UUID assigned at creation). When Atmet makes API calls on your behalf — for example, to run a workflow or fetch integration data — it automatically includes your active workspace ID in the `X-Workspace-Id` request header. You do not need to manage this manually when using the Atmet web app.
+Every workspace has a unique ID (a UUID assigned at creation). When Atmet makes API calls on your behalf — for example, to run a workflow or fetch integration data — it automatically includes your active workspace ID in the `x-workspace-id` request header. You do not need to manage this manually when using the Atmet web app.
 
 If you are building on top of Atmet's API directly, include your workspace ID in every authenticated request:
 
 ```http
 GET /api/workflows HTTP/1.1
 Authorization: Bearer <your_token>
-X-Workspace-Id: <your_workspace_id>
+x-workspace-id: <your_workspace_id>
 ```
 
 <Tip>

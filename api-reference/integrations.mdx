@@ -252,11 +252,11 @@ POST /api/integrations/{slug}/connect
 
 **Request body**
 
-<ParamField body="api_key" type="string" required>
+<ParamField body="apiKey" type="string" required>
   The third-party API key or access token for the integration. For HubSpot, use a private app token. For Salesforce, use an API-enabled integration user key. For X, use the app API key from the X developer portal.
 </ParamField>
 
-<ParamField body="key_name" type="string">
+<ParamField body="keyName" type="string">
   An optional label to identify the key (e.g. `"Production HubSpot token"`). Stored alongside the credential for your own reference.
 </ParamField>
 
@@ -277,8 +277,8 @@ curl -X POST https://atmet.ai/api/integrations/hubspot/connect \
   -H "X-Workspace-Id: ws_your_workspace_id" \
   -H "Content-Type: application/json" \
   -d '{
-    "api_key": "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    "key_name": "Production HubSpot token"
+    "apiKey": "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "keyName": "Production HubSpot token"
   }'
 ```
 
@@ -291,8 +291,8 @@ const response = await fetch("https://atmet.ai/api/integrations/hubspot/connect"
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    api_key: "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    key_name: "Production HubSpot token",
+    apiKey: "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    keyName: "Production HubSpot token",
   }),
 });
 
@@ -325,10 +325,16 @@ POST /api/integrations/{slug}/test
 | `X-Workspace-Id` | Yes | The workspace whose stored credentials to test |
 | `Content-Type` | Yes | `application/json` |
 
+**Request body**
+
+<ParamField body="apiKey" type="string" required>
+  The third-party API key or access token to validate. This is the same value you passed when connecting the integration.
+</ParamField>
+
 **Response**
 
 <ResponseField name="success" type="boolean" required>
-  `true` if the stored credentials successfully authenticated with the third-party service.
+  `true` if the credentials successfully authenticated with the third-party service.
 </ResponseField>
 
 <ResponseField name="message" type="string" required>
@@ -349,7 +355,10 @@ POST /api/integrations/{slug}/test
 curl -X POST https://atmet.ai/api/integrations/hubspot/test \
   -H "Authorization: Bearer atmet_your_api_key" \
   -H "X-Workspace-Id: ws_your_workspace_id" \
-  -H "Content-Type: application/json"
+  -H "Content-Type: application/json" \
+  -d '{
+    "apiKey": "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  }'
 ```
 
 ```javascript JavaScript
@@ -360,6 +369,9 @@ const response = await fetch("https://atmet.ai/api/integrations/hubspot/test", {
     "X-Workspace-Id": "ws_your_workspace_id",
     "Content-Type": "application/json",
   },
+  body: JSON.stringify({
+    apiKey: "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  }),
 });
 
 const { data } = await response.json();

@@ -1,5 +1,5 @@
 ---
-title: "Frequently asked questions about Atmet"
+title: "Atmet FAQ: Workflows, Skills, Integrations, and Plans"
 sidebarTitle: "FAQ"
 description: "Answers to the most common questions about Atmet's features, integrations, Skills, Workflows, plans, account management, and getting started."
 ---
@@ -160,25 +160,12 @@ For data retention, export, and deletion options, visit **Settings → Data cont
 </Accordion>
 
 <Accordion title="Can I use Atmet via API?">
-Yes. Atmet exposes a REST API that you can use to interact with your workspace programmatically. To get started:
+Yes. Atmet exposes a REST API that you can use to interact with your workspace programmatically. API key access is managed at the workspace level — contact your workspace admin or reach out to [Atmet support](https://atmet.ai) to request an API key for your workspace.
 
-<Steps>
-  <Step title="Open Settings">
-    Click the settings icon in the sidebar.
-  </Step>
-  <Step title="Go to API Keys">
-    Select **API Keys** from the settings navigation (available under your account section).
-  </Step>
-  <Step title="Generate a key">
-    Click **Generate** to create a new API key. Copy it immediately — it won't be shown again.
-  </Step>
-  <Step title="Use the key">
-    Include the key in the `Authorization` header of your API requests.
-  </Step>
-</Steps>
+Once you have a key, include it in the `Authorization` header of your API requests.
 
 <Warning>
-  Treat your API key like a password. Do not commit it to source control or share it publicly. If a key is compromised, delete it and generate a new one.
+  Treat your API key like a password. Do not commit it to source control or share it publicly. If a key is compromised, contact your workspace admin immediately to revoke it and issue a new one.
 </Warning>
 </Accordion>
 

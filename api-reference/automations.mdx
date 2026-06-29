@@ -39,8 +39,8 @@ Every endpoint that returns an automation yields the following fields.
   Lifecycle state of the automation. One of `active`, `inactive`, or `draft`.
 </ResponseField>
 
-<ResponseField name="script_key" type="object">
-  A JSON blob containing the structured workflow steps. Populated automatically when the automation is generated from a chat conversation. May be `null` for manually created automations.
+<ResponseField name="script_key" type="string">
+  An opaque string that encodes the workflow definition. Populated automatically when the automation is generated from a chat conversation. You can store and round-trip this value, but should not rely on its internal structure. May be `null` for manually created automations.
 </ResponseField>
 
 <ResponseField name="created_by" type="string" required>
@@ -151,6 +151,14 @@ POST /api/automations
   A short explanation of what the automation does. Shown in the Workflows view in the UI.
 </ParamField>
 
+<ParamField body="script_key" type="string">
+  Opaque workflow definition string. Typically set automatically when an automation is generated from a chat conversation. You can supply a previously retrieved `script_key` value to clone or restore a workflow definition.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Initial lifecycle status. Must be one of `active`, `inactive`, or `draft`. Defaults to `draft`.
+</ParamField>
+
 <CodeGroup>
 
 ```bash curl
@@ -211,7 +219,7 @@ console.log(data.automation);
 
 ## Get an automation
 
-Retrieve the full details of a single automation, including its `script_key` workflow steps.
+Retrieve the full details of a single automation, including the `script_key` field if one is set.
 
 ```
 GET /api/automations/{id}
@@ -260,13 +268,7 @@ console.log(data.automation);
       "name": "Weekly standup digest",
       "description": "Collects standup updates and emails a summary to the team.",
       "status": "active",
-      "script_key": {
-        "steps": [
-          { "action": "collect_messages", "source": "standup-channel" },
-          { "action": "summarise", "model": "gpt-4o" },
-          { "action": "send_email", "to": "team@example.com" }
-        ]
-      },
+      "script_key": "<opaque workflow definition string>",
       "created_by": "usr_01j9x...",
       "created_at": "2025-01-10T09:00:00Z",
       "updated_at": "2025-01-14T08:30:00Z"
@@ -303,6 +305,10 @@ PATCH /api/automations/{id}
 
 <ParamField body="description" type="string">
   Updated description of what the automation does.
+</ParamField>
+
+<ParamField body="script_key" type="string">
+  Replacement workflow definition string.
 </ParamField>
 
 <ParamField body="status" type="string">

@@ -1,13 +1,13 @@
 ---
 title: "Connect API key integrations: HubSpot, Salesforce, and X"
 sidebarTitle: "API Key Apps"
-description: "Connect HubSpot, Salesforce, and X by generating an API key in each provider's developer settings and pasting it into Atmet."
+description: "Connect HubSpot, Salesforce, and X by generating an API key in each provider's settings and pasting it into Atmet to activate triggers and actions."
 ---
 
 API key integrations require you to create a credential in the provider's own settings — typically a private app token, an API key, or a key-and-secret pair — and then paste it into Atmet. Unlike OAuth, there is no redirect to a sign-in screen. You control exactly which key is used and can rotate it any time by reconnecting. Atmet supports three API key integrations: HubSpot, Salesforce, and X.
 
 <Warning>
-  API keys are encrypted and stored securely. Once you save a key, Atmet will not display it again. Keep a copy in a secure location such as a password manager before saving, in case you need to reference it later.
+  API keys are stored securely. Once you save a key, Atmet will not display it again. Keep a copy in a secure location such as a password manager before saving, in case you need to reference it later.
 </Warning>
 
 ## Connect an API key integration
@@ -69,16 +69,15 @@ The steps below apply to every API key integration. Provider setup details vary 
   </Accordion>
 
   <Accordion title="Salesforce" icon="s">
-    Salesforce uses an API-enabled integration user key to authenticate. You create this key in Salesforce Setup and configure the appropriate permissions for the objects Atmet needs to read and write.
+    Salesforce uses an API-enabled integration user key to authenticate. You create this key in Salesforce Setup and configure the appropriate object permissions for what Atmet needs to read and write.
 
-    **Where to create a key:** [login.salesforce.com](https://login.salesforce.com/) → Setup → Apps → App Manager
+    **Where to create a key:** [login.salesforce.com](https://login.salesforce.com/) → Setup
 
     **Steps:**
     1. Sign in to Salesforce and open **Setup** (gear icon in the top navigation).
-    2. Search for **App Manager** in Quick Find, then click **New Connected App**.
-    3. Enable **API access**, configure the required OAuth scopes, and save the app.
-    4. Copy the generated API key or consumer secret from the app detail page.
-    5. Open **Apps** in Atmet, click the Salesforce card, paste the key, test the connection, and save.
+    2. Create an API-enabled integration user key with the required object permissions for the records Atmet will access.
+    3. Copy the API key immediately after generation.
+    4. Open **Apps** in Atmet, click the Salesforce card, paste the key, test the connection, and save.
 
     **Permissions Atmet uses:**
 
@@ -92,7 +91,7 @@ The steps below apply to every API key integration. Provider setup details vary 
     **Actions:** Create lead · Update opportunity
   </Accordion>
 
-  <Accordion title="X (Twitter)" icon="x-twitter">
+  <Accordion title="X" icon="x-twitter">
     X uses app-level API keys generated in the X Developer Portal. You need to create a project and an app, then generate a key and secret for your environment.
 
     **Where to create keys:** [developer.x.com](https://developer.x.com/) → Dashboard → Projects & Apps
