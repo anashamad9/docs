@@ -1,47 +1,125 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "Get started with Atmet in 5 minutes"
+sidebarTitle: "Quickstart"
+description: "Sign up for Atmet, create your workspace, connect your first app, and chat with the AI agent to build your first automation — all in under five minutes."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
-
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
-
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+This guide walks you through everything you need to go from zero to your first running automation. By the end you will have a workspace set up, at least one app connected, and a workflow created entirely through conversation with Atmet's AI agent.
 
 <Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
+  Atmet is in early access alpha. Access is invite-only right now. If you do not yet have an invitation, join the waitlist at [atmet.ai](https://atmet.ai) and you will receive an email as soon as a spot opens up for you.
 </Tip>
+
+<Steps>
+
+  <Step title="Sign up or accept your invitation">
+    If you received an invitation email from a teammate, click the **Accept invitation** link in that email — it drops you straight into your team's workspace and skips the steps below.
+
+    If you are starting fresh:
+
+    1. Go to [atmet.ai](https://atmet.ai) and click **Join waitlist**.
+    2. Enter your name and work email address and submit the form.
+    3. When your waitlist spot is approved, you will receive an email with a one-time sign-in link.
+    4. Click that link. Atmet prompts you to verify your email with a **6-digit OTP code** sent to your inbox — enter it to confirm your identity.
+    5. Create a password for future sign-ins (at least 8 characters), then click **Create password**.
+
+    <Info>
+      If you already have a password set, the sign-in page asks for your email then your password directly — no OTP step required.
+    </Info>
+  </Step>
+
+  <Step title="Create your workspace">
+    After signing in for the first time, Atmet walks you through a short onboarding flow. The first step is creating a workspace.
+
+    1. Enter a **workspace name** — this is usually your company or team name (for example, `Acme Corp` or `Growth Team`).
+    2. Optionally upload a **workspace image** by clicking the upload icon. This appears in the sidebar and in invitation emails so teammates recognise the workspace at a glance.
+    3. Click **Continue** (or press <kbd>↵ Enter</kbd>).
+
+    Atmet creates the workspace and automatically makes you its **owner**.
+
+    <Note>
+      You can update the workspace name, image, and country at any time from **Workspace Settings**.
+    </Note>
+  </Step>
+
+  <Step title="Complete your profile">
+    After creating the workspace, Atmet moves to the profile step. This information helps your teammates identify you and helps the AI personalise its responses.
+
+    1. Enter your **first name** (required) and **second name** (optional).
+    2. Optionally upload a **profile photo**.
+    3. Select your **role** from the dropdown — options include Founder / Owner, Operations, Engineering, Product, Design, Marketing, and Other. This field is optional but helps the AI understand your context.
+    4. Optionally add a **phone number** by selecting your country code and entering your number.
+    5. Click **Complete setup**.
+
+    You will see a confirmation screen — click **Open Atmet** to enter your workspace and land on the AI Core page.
+  </Step>
+
+  <Step title="Connect your first app">
+    Before you can automate anything, Atmet needs permission to talk to the apps involved. Connect your first integration now so the AI agent has something to work with.
+
+    1. In the left sidebar, navigate to **Integrations**.
+    2. Browse the catalogue and click the app you want to connect (Gmail and Slack are great starting points).
+    3. Click **Connect** and complete the OAuth flow in the popup window.
+    4. Once authorised, the app shows a green **Connected** badge.
+
+    Repeat this for any other apps you plan to use in your first automation.
+
+    <Info>
+      Connected apps are scoped to your workspace. Every member of the workspace can use a connected app in their workflows, and you only need to connect each app once.
+    </Info>
+  </Step>
+
+  <Step title="Open AI Core and describe an automation">
+    Now you are ready to build your first workflow just by chatting.
+
+    1. Click **AI Core** in the left sidebar.
+    2. Type a description of the automation you want in plain language. Be specific about the trigger and the outcome. For example:
+
+    ```text
+    When I receive an email in Gmail with the subject "New lead", create a contact in HubSpot
+    and post a summary to the #leads Slack channel.
+    ```
+
+    3. The AI agent responds with a proposed workflow. Review the steps it outlines — you can ask it to adjust anything by replying in the chat.
+    4. When the workflow looks right, confirm it. Atmet saves and enables the workflow automatically.
+    5. Navigate to **Workflows** in the sidebar to see your new automation listed and ready to run.
+
+    <Tip>
+      You do not need to know the exact names of API fields or actions. Just describe what you want in everyday language and let the AI figure out the technical details.
+    </Tip>
+  </Step>
+
+</Steps>
+
+## What's next?
+
+<CardGroup cols={2}>
+  <Card
+    title="Workspaces"
+    icon="building"
+    href="/workspaces"
+  >
+    Invite teammates, manage roles, and configure your workspace settings.
+  </Card>
+  <Card
+    title="Workflows"
+    icon="arrows-rotate"
+    href="/features/workflows"
+  >
+    Explore triggers, actions, and how to manage your automations.
+  </Card>
+  <Card
+    title="Skills"
+    icon="puzzle-piece"
+    href="/features/skills"
+  >
+    Create reusable skills to make future automations faster to build.
+  </Card>
+  <Card
+    title="Integrations"
+    icon="plug"
+    href="/integrations/overview"
+  >
+    See every app you can connect to your Atmet workspace.
+  </Card>
+</CardGroup>

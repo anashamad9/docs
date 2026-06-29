@@ -1,0 +1,205 @@
+---
+title: "Apps: connect external tools to your Atmet workspace"
+sidebarTitle: "Apps"
+description: "Browse and connect 10 external integrations — Gmail, Slack, Notion, GitHub, and more — to use as triggers and actions inside your Atmet workflows."
+---
+
+The Apps page is where you browse and connect the external tools your workflows depend on. Once an app is connected, its triggers and actions become available to any workflow node in your workspace — letting you listen for events in Gmail, post to Slack, create Jira issues, or update Salesforce records without leaving Atmet. Every integration is configured once per workspace and then shared across all automations.
+
+Navigate to **Apps** in the sidebar to see the full catalog. Each app card shows the integration name, a short description, its authentication type, and whether it is already connected. Use the search bar to filter by name, or click a category button to narrow the list.
+
+## Available integrations
+
+Atmet currently supports ten integrations across five categories.
+
+<CardGroup cols={2}>
+  <Card title="Communication" icon="comments">
+    **Gmail**, **Slack**, **Discord** — connect your messaging and email tools to trigger workflows from incoming messages or send notifications as part of a workflow run.
+  </Card>
+  <Card title="Productivity" icon="check-square">
+    **Notion**, **Asana** — automate page creation, task management, and project tracking across your productivity stack.
+  </Card>
+  <Card title="CRM" icon="address-book">
+    **HubSpot**, **Salesforce** — sync contact and deal activity with your CRM so workflows can react to pipeline changes and enrich records automatically.
+  </Card>
+  <Card title="Developer" icon="code">
+    **GitHub**, **Jira** — track pull requests, issues, and sprint milestones, and create or update records directly from workflow outcomes.
+  </Card>
+</CardGroup>
+
+**Social** — **X (Twitter)** lets you publish posts and respond to mentions from workflow action nodes, using the X developer API.
+
+## Integration details
+
+<Tabs>
+  <Tab title="Gmail">
+    **Category:** Communication · **Auth:** OAuth 2.0
+
+    Send and organize email activity directly from workflows. Gmail connects through your Google account and requests only the scopes needed for the automations you run.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New email received | Starts a workflow when a new email arrives in the inbox. |
+    | Trigger | Email labeled | Runs when a chosen Gmail label is applied to a message. |
+    | Action | Send email | Send a message from the connected Gmail account. |
+    | Action | Add label | Attach one or more labels to an existing email. |
+  </Tab>
+  <Tab title="Slack">
+    **Category:** Communication · **Auth:** OAuth 2.0
+
+    Post updates and listen for channel activity in real time. Authorize Atmet for a specific workspace and choose which channels to monitor.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New channel message | Starts when a new message is posted in a selected channel. |
+    | Trigger | Reaction added | Starts when a reaction is added to a message. |
+    | Action | Send channel message | Post a message to a channel or thread. |
+    | Action | Send direct message | Send a DM to a workspace member. |
+  </Tab>
+  <Tab title="Notion">
+    **Category:** Productivity · **Auth:** OAuth 2.0
+
+    Create and update pages, tasks, and databases automatically. Select which Notion workspace pages and databases Atmet can access during setup.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New page created | Starts when a new page appears in a selected database. |
+    | Action | Create page | Create a page with mapped properties in a database. |
+    | Action | Update page | Update properties or content of an existing page. |
+  </Tab>
+  <Tab title="HubSpot">
+    **Category:** CRM · **Auth:** API Key
+
+    Sync contacts and deal activity with your CRM workflows. Generate a private app token in HubSpot, paste it into Atmet, and test the connection before saving.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New contact | Starts when a contact is created in HubSpot. |
+    | Trigger | Deal stage changed | Starts when a deal moves to a new stage. |
+    | Action | Create contact | Create a new contact in your CRM. |
+    | Action | Create note | Attach a note to an existing CRM record. |
+  </Tab>
+  <Tab title="GitHub">
+    **Category:** Developer · **Auth:** OAuth 2.0
+
+    Track pull requests and automate repository operations. Authorize Atmet for the organizations and repositories you want to monitor.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | Pull request opened | Starts when a pull request is opened. |
+    | Trigger | Issue opened | Starts when a new issue is created. |
+    | Action | Create issue | Create a GitHub issue from workflow results. |
+    | Action | Comment on pull request | Post a structured review or update comment. |
+  </Tab>
+  <Tab title="Jira">
+    **Category:** Developer · **Auth:** OAuth 2.0
+
+    Sync issue activity and sprint milestones into workflows. Authorize Atmet for a specific Atlassian site during setup.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | Issue created | Starts when a new issue is created. |
+    | Trigger | Issue transitioned | Starts when an issue moves to a new status. |
+    | Action | Create issue | Create a Jira issue in a selected project. |
+    | Action | Add comment | Post a comment on an existing issue. |
+  </Tab>
+  <Tab title="Asana">
+    **Category:** Productivity · **Auth:** OAuth 2.0
+
+    Track tasks and project updates across teams. Authorize Atmet for your Asana workspace and select the projects to monitor.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | Task created | Starts when a new task is created in a project. |
+    | Trigger | Task completed | Starts when a task is marked complete. |
+    | Action | Create task | Create a new task in Asana. |
+    | Action | Update task | Update an existing task's details. |
+  </Tab>
+  <Tab title="Salesforce">
+    **Category:** CRM · **Auth:** API Key
+
+    Automate lead, account, and opportunity operations. Create an API-enabled integration user key in Salesforce setup, paste it into Atmet, and test before saving.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New lead | Starts when a new lead is added. |
+    | Trigger | Opportunity updated | Starts when an opportunity changes stage. |
+    | Action | Create lead | Create a lead record in Salesforce. |
+    | Action | Update opportunity | Update key fields of an opportunity. |
+  </Tab>
+  <Tab title="Discord">
+    **Category:** Communication · **Auth:** OAuth 2.0
+
+    Connect community channels and bot notifications. Select the Discord server where Atmet can post updates during authorization.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | Message posted | Starts when a new message is posted in a channel. |
+    | Trigger | Member joined | Starts when a member joins a selected server. |
+    | Action | Send message | Send a message to a selected channel. |
+    | Action | Create thread | Create a thread from a channel message. |
+  </Tab>
+  <Tab title="X (Twitter)">
+    **Category:** Social · **Auth:** API Key
+
+    Publish posts and react to social engagement signals. Create an app in the X developer portal, generate an API key and secret, and paste them into Atmet.
+
+    | Type | Name | Description |
+    |---|---|---|
+    | Trigger | New mention | Starts when your account is mentioned in a post. |
+    | Action | Create post | Publish a post from a workflow. |
+    | Action | Reply to post | Reply to an existing post thread. |
+  </Tab>
+</Tabs>
+
+## Connecting an app
+
+The connection flow depends on the app's authentication type.
+
+<Tabs>
+  <Tab title="OAuth 2.0">
+    OAuth apps — Gmail, Slack, Notion, GitHub, Jira, Asana, Discord — connect through an authorization redirect in your browser.
+
+    <Steps>
+      <Step title="Click Connect">
+        On the app card, click **Connect**. You are taken to the app's dedicated setup page.
+      </Step>
+      <Step title="Authorize in your browser">
+        A browser window opens to the app's OAuth consent screen. Sign in to the account you want to link, review the requested permissions, and click **Allow** or **Authorize**.
+      </Step>
+      <Step title="Return to Atmet">
+        After authorizing, you are redirected back to Atmet. The app card updates to show a **Connected** badge. The integration is now active for the entire workspace.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="API Key">
+    API key apps — HubSpot, Salesforce, X (Twitter) — require you to generate a key in the external tool's developer settings and paste it into Atmet.
+
+    <Steps>
+      <Step title="Generate your API key">
+        Open the external app's settings or developer portal. For HubSpot, create a private app token. For Salesforce, create an API-enabled integration user key. For X, create an app in the developer portal and generate a key and secret.
+      </Step>
+      <Step title="Paste the key into Atmet">
+        On the app's setup page in Atmet, paste the key into the API key field.
+      </Step>
+      <Step title="Test the connection">
+        Click **Test** to verify that Atmet can reach the external API with the provided key. A successful test confirms the credentials are valid.
+      </Step>
+      <Step title="Save">
+        Click **Save** to activate the integration. The app card shows a **Connected** badge once saved.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+<Tip>
+  Always test your connection before attaching the app to a production workflow. A failed test usually means the API key has insufficient permissions or the OAuth token has expired. Re-authorize or regenerate the key, then test again before saving.
+</Tip>
+
+## Managing connected apps
+
+Click **Manage** on any connected app card to open its settings page. From there you can review the active permissions (OAuth scopes), rotate or replace credentials, and disconnect the app if it is no longer needed.
+
+<Warning>
+  Disconnecting an app immediately invalidates its triggers and actions across all workflows that depend on it. Workflows referencing a disconnected app will fail when they next run. Reconnect the app or update the affected workflow nodes before disconnecting.
+</Warning>

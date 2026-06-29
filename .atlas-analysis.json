@@ -1,0 +1,129 @@
+{
+  "projectType": "saas",
+  "projectName": "Atmet",
+  "projectDescription": "Atmet is an AI-powered workspace platform that lets teams automate business workflows by chatting with an AI agent, connecting apps, and building reusable skills.",
+  "theme": "luma",
+  "primaryColor": "#1e90ff",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "workspaces"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/ai-core",
+              "features/workflows",
+              "features/skills",
+              "features/apps"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/overview",
+              "integrations/oauth",
+              "integrations/api-key"
+            ]
+          },
+          {
+            "group": "Settings & Admin",
+            "pages": [
+              "settings/account",
+              "settings/workspace",
+              "settings/members",
+              "settings/usage"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "faq",
+              "troubleshooting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              "api-reference/chats",
+              "api-reference/automations",
+              "api-reference/skills",
+              "api-reference/integrations",
+              "api-reference/workspaces",
+              "api-reference/api-keys"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "AI Core chat agent for conversational workflow automation",
+    "Visual workflow builder with trigger and action nodes",
+    "Reusable Skills library (Reasoning, Data, Automation, Support)",
+    "App integrations catalog (Gmail, Slack, Notion, HubSpot, GitHub, Jira, and more)",
+    "Multi-workspace support with team members and roles",
+    "API key management for programmatic access",
+    "Schedule-based and manual workflow execution",
+    "Execution logs with per-node status tracking"
+  ],
+  "publicApiSurface": [
+    "GET /api/chats",
+    "POST /api/chats",
+    "GET /api/chats/[id]",
+    "GET /api/chats/[id]/messages",
+    "POST /api/chats/[id]/messages",
+    "GET /api/automations",
+    "POST /api/automations",
+    "GET /api/automations/[id]",
+    "PATCH /api/automations/[id]",
+    "DELETE /api/automations/[id]",
+    "GET /api/skills",
+    "POST /api/skills",
+    "GET /api/skills/[id]",
+    "PATCH /api/skills/[id]",
+    "DELETE /api/skills/[id]",
+    "GET /api/integrations",
+    "GET /api/integrations/[slug]",
+    "POST /api/integrations/[slug]/connect",
+    "GET /api/integrations/[slug]/oauth/init",
+    "GET /api/integrations/[slug]/test",
+    "GET /api/workspaces",
+    "POST /api/workspaces",
+    "GET /api/workspaces/[id]",
+    "PATCH /api/workspaces/[id]",
+    "GET /api/workspaces/[id]/members",
+    "POST /api/workspaces/[id]/members",
+    "GET /api/api-keys",
+    "POST /api/api-keys",
+    "DELETE /api/api-keys/[id]",
+    "GET /api/users/me",
+    "PATCH /api/users/me",
+    "GET /api/schedules",
+    "POST /api/schedules",
+    "GET /api/files",
+    "POST /api/files"
+  ]
+}

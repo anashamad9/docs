@@ -1,0 +1,561 @@
+---
+title: "Workspaces API — create and manage workspaces"
+sidebarTitle: "Workspaces"
+description: "Create, retrieve, update, and delete Atmet workspaces. List and remove workspace members programmatically using the Workspaces REST API."
+---
+
+The Workspaces API gives you full programmatic control over workspaces and their membership. You can list every workspace your account belongs to, create new ones, update settings like name and avatar, and remove workspaces you own. The members sub-resource lets you inspect who has access to a workspace and remove members when necessary. All write operations on a workspace require you to be either the owner or an admin-level member.
+
+---
+
+## The Workspace object
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the workspace (UUID).
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Display name of the workspace.
+</ResponseField>
+
+<ResponseField name="plan" type="string" required>
+  Billing plan for the workspace. One of `free`, `pro`, or `enterprise`.
+</ResponseField>
+
+<ResponseField name="owner_id" type="string" required>
+  User ID of the workspace owner.
+</ResponseField>
+
+<ResponseField name="role" type="string" required>
+  The authenticated user's role in this workspace. Either `owner` or `member`. Returned when the workspace is fetched through the list endpoint.
+</ResponseField>
+
+<ResponseField name="avatar_url" type="string | null">
+  Absolute URL of the workspace avatar image, or `null` if none is set.
+</ResponseField>
+
+<ResponseField name="country" type="string | null">
+  ISO 3166-1 alpha-2 country code associated with the workspace (e.g. `US`, `DE`), or `null`.
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  ISO 8601 timestamp of when the workspace was created.
+</ResponseField>
+
+---
+
+## The Member object
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the membership record (UUID).
+</ResponseField>
+
+<ResponseField name="user_id" type="string" required>
+  The user's unique identifier.
+</ResponseField>
+
+<ResponseField name="role" type="string" required>
+  The member's role in the workspace. Either `owner` or `member`.
+</ResponseField>
+
+<ResponseField name="email" type="string" required>
+  The member's email address.
+</ResponseField>
+
+<ResponseField name="full_name" type="string | null">
+  The member's display name, or `null` if not set.
+</ResponseField>
+
+<ResponseField name="avatar_url" type="string | null">
+  Absolute URL to the member's avatar, or `null` if none is set.
+</ResponseField>
+
+<ResponseField name="joined_at" type="string" required>
+  ISO 8601 timestamp of when the member joined the workspace.
+</ResponseField>
+
+---
+
+## List workspaces
+
+Returns all workspaces where your account has an active membership, including the role you hold in each one.
+
+```
+GET /api/workspaces
+```
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "workspaces": [Workspace]
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/workspaces \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/workspaces", {
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.workspaces);
+```
+</CodeGroup>
+
+**Example response**
+
+```json
+{
+  "data": {
+    "workspaces": [
+      {
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "Acme Corp",
+        "plan": "pro",
+        "owner_id": "user_abc123",
+        "role": "owner",
+        "avatar_url": "https://example.com/avatars/acme.png",
+        "country": "US",
+        "created_at": "2024-09-15T10:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Create a workspace
+
+Creates a new workspace and automatically adds you as its owner.
+
+```
+POST /api/workspaces
+```
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="name" type="string" required>
+  The display name for the new workspace. Must be a non-empty string.
+</ParamField>
+
+<ParamField body="country" type="string">
+  ISO 3166-1 alpha-2 country code to associate with the workspace (e.g. `"US"`). Optional.
+</ParamField>
+
+**Response** — `201 Created`
+
+```json
+{
+  "data": {
+    "workspace": Workspace
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X POST https://atmet.ai/api/workspaces \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Corp",
+    "country": "US"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/workspaces", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Acme Corp",
+    country: "US",
+  }),
+});
+
+const { data } = await response.json();
+console.log(data.workspace.id);
+```
+</CodeGroup>
+
+---
+
+## Get a workspace
+
+Fetches a single workspace by its ID. You must be a member of the workspace to retrieve it.
+
+```
+GET /api/workspaces/{id}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace to retrieve.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "workspace": Workspace
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(`https://atmet.ai/api/workspaces/${workspaceId}`, {
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.workspace);
+```
+</CodeGroup>
+
+---
+
+## Update a workspace
+
+Updates one or more settings on an existing workspace. You must be the workspace owner or an admin to call this endpoint. Only the fields you include in the request body are changed — omitted fields remain untouched.
+
+```
+PATCH /api/workspaces/{id}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace to update.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="name" type="string">
+  New display name for the workspace.
+</ParamField>
+
+<ParamField body="country" type="string">
+  Updated ISO 3166-1 alpha-2 country code (e.g. `"DE"`).
+</ParamField>
+
+<ParamField body="avatar_url" type="string">
+  Absolute URL pointing to the new workspace avatar image.
+</ParamField>
+
+**Response**
+
+```json
+{
+  "data": {
+    "workspace": Workspace
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Acme Corp (Rebranded)",
+    "avatar_url": "https://example.com/avatars/acme-new.png"
+  }'
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(`https://atmet.ai/api/workspaces/${workspaceId}`, {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Acme Corp (Rebranded)",
+    avatar_url: "https://example.com/avatars/acme-new.png",
+  }),
+});
+
+const { data } = await response.json();
+console.log(data.workspace.name);
+```
+</CodeGroup>
+
+---
+
+## Delete a workspace
+
+Permanently deletes a workspace. Only the workspace **owner** can perform this action — admin members receive `403 Forbidden`.
+
+<Warning>
+  **This action is irreversible.** Deleting a workspace permanently removes all automations, skills, integration connections, and member associations tied to it. There is no recovery path. Make sure you have exported or migrated anything you want to keep before calling this endpoint.
+</Warning>
+
+```
+DELETE /api/workspaces/{id}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace to delete.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(`https://atmet.ai/api/workspaces/${workspaceId}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.success); // true
+```
+</CodeGroup>
+
+---
+
+## List workspace members
+
+Returns all active members of a workspace, including their role and profile details. You must be a member of the workspace to call this endpoint.
+
+```
+GET /api/workspaces/{id}/members
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace whose members to list.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "members": [Member]
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890/members \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(
+  `https://atmet.ai/api/workspaces/${workspaceId}/members`,
+  {
+    headers: {
+      "Authorization": "Bearer atmet_your_api_key",
+    },
+  }
+);
+
+const { data } = await response.json();
+console.log(data.members);
+```
+</CodeGroup>
+
+**Example response**
+
+```json
+{
+  "data": {
+    "members": [
+      {
+        "id": "mem_xyz789",
+        "user_id": "user_abc123",
+        "role": "owner",
+        "email": "alice@acme.com",
+        "full_name": "Alice Smith",
+        "avatar_url": "https://example.com/avatars/alice.png",
+        "joined_at": "2024-09-15T10:00:00.000Z"
+      },
+      {
+        "id": "mem_uvw456",
+        "user_id": "user_def456",
+        "role": "member",
+        "email": "bob@acme.com",
+        "full_name": "Bob Jones",
+        "avatar_url": null,
+        "joined_at": "2024-10-01T08:30:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Remove a workspace member
+
+Removes a member from the workspace. You can call this endpoint if you are the workspace owner, an admin, or if you are removing **yourself** (leaving the workspace). You cannot remove the workspace owner — doing so returns `400 Bad Request`.
+
+```
+DELETE /api/workspaces/{id}/members/{userId}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the workspace.
+</ParamField>
+
+<ParamField path="userId" type="string" required>
+  The user ID of the member to remove.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X DELETE \
+  https://atmet.ai/api/workspaces/a1b2c3d4-e5f6-7890-abcd-ef1234567890/members/user_def456 \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const workspaceId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+const userId = "user_def456";
+
+const response = await fetch(
+  `https://atmet.ai/api/workspaces/${workspaceId}/members/${userId}`,
+  {
+    method: "DELETE",
+    headers: {
+      "Authorization": "Bearer atmet_your_api_key",
+    },
+  }
+);
+
+const { data } = await response.json();
+console.log(data.success); // true
+```
+</CodeGroup>
+
+---
+
+## Error responses
+
+All errors follow the standard Atmet error envelope.
+
+```json
+{
+  "error": {
+    "message": "Workspace not found."
+  }
+}
+```
+
+| HTTP status | When it occurs |
+|---|---|
+| `400 Bad Request` | Invalid request body, or attempting to remove the workspace owner |
+| `401 Unauthorized` | Missing or invalid Bearer token |
+| `403 Forbidden` | Valid token but you are not the owner or an admin (for write operations) |
+| `404 Not Found` | The workspace or member ID does not exist, or you are not a member |
+| `500 Internal Server Error` | Unexpected server-side failure |

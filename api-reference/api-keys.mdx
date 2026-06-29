@@ -1,0 +1,306 @@
+---
+title: "API Keys — generate and revoke workspace API keys"
+sidebarTitle: "API Keys"
+description: "Generate, list, and revoke workspace API keys for authenticating Atmet REST API requests. Keys are shown once and stored only as a SHA-256 hash."
+---
+
+API keys are the credentials you use to authenticate all Atmet REST API calls. Each key is scoped to a workspace, can optionally carry an expiry date, and is identified by a human-readable name so your team knows what each key is for. You can create as many keys as you need — for example, one per integration, environment, or CI/CD pipeline — and revoke any of them instantly without affecting the others.
+
+<Note>
+  **Atmet stores only a SHA-256 hash of each key.** The raw key value is shown exactly once — immediately after creation — and cannot be retrieved later. If you lose a key, revoke it and create a new one. Atmet has no way to recover or display the original value.
+</Note>
+
+---
+
+## The ApiKey object
+
+The list and metadata fields returned for every key — the raw key value itself is never included.
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the API key (UUID). Use this ID when revoking a key.
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  The human-readable label you assigned when the key was created.
+</ResponseField>
+
+<ResponseField name="last_used_at" type="string | null">
+  ISO 8601 timestamp of the most recent successful request authenticated with this key, or `null` if it has never been used.
+</ResponseField>
+
+<ResponseField name="expires_at" type="string | null">
+  ISO 8601 timestamp after which the key is no longer valid, or `null` for a non-expiring key.
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  ISO 8601 timestamp of when the key was created.
+</ResponseField>
+
+---
+
+## Key format
+
+Every Atmet API key follows the format:
+
+```
+atmet_<40 hex characters>
+```
+
+For example: `atmet_3a9f1b2c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a`
+
+The 40-character suffix is generated from 20 cryptographically random bytes (`crypto.randomBytes(20).toString('hex')`), giving 2^160 possible values.
+
+---
+
+## List API keys
+
+Returns all API keys for your workspace ordered by creation date (newest first). The raw key value is never included in this response.
+
+```
+GET /api/api-keys
+```
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace whose keys to list |
+
+**Response**
+
+```json
+{
+  "data": {
+    "keys": [ApiKey]
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/api-keys \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id"
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/api-keys", {
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.keys);
+```
+</CodeGroup>
+
+**Example response**
+
+```json
+{
+  "data": {
+    "keys": [
+      {
+        "id": "k1a2b3c4-d5e6-7890-abcd-ef1234567890",
+        "name": "Production CI key",
+        "last_used_at": "2024-12-01T16:45:00.000Z",
+        "expires_at": "2025-12-01T00:00:00.000Z",
+        "created_at": "2024-12-01T09:00:00.000Z"
+      },
+      {
+        "id": "k9z8y7x6-w5v4-3210-fedc-ba9876543210",
+        "name": "Local development",
+        "last_used_at": null,
+        "expires_at": null,
+        "created_at": "2024-11-20T14:30:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Create an API key
+
+Generates a new API key for the workspace. The full raw key is returned **once** in the response — copy it to a secure location immediately.
+
+```
+POST /api/api-keys
+```
+
+<Warning>
+  **Copy the key now — this is the only time it is shown.** Atmet stores only the SHA-256 hash of the key and cannot display the original value again. If you navigate away or lose the key, you must revoke it and create a replacement.
+</Warning>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace to create the key for |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="name" type="string" required>
+  A descriptive label for the key so you can identify it later (e.g. `"GitHub Actions deploy"`, `"Local development"`). Must be a non-empty string.
+</ParamField>
+
+<ParamField body="expires_at" type="string">
+  ISO 8601 datetime string at which the key should expire (e.g. `"2025-12-31T23:59:59.000Z"`). Omit this field to create a key that never expires.
+</ParamField>
+
+**Response** — `201 Created`
+
+<ResponseField name="key" type="string" required>
+  The full raw API key prefixed with `atmet_`. This is the value you use in `Authorization: Bearer` headers. **Shown once only.**
+</ResponseField>
+
+<ResponseField name="meta" type="object" required>
+  <Expandable title="ApiKeyMeta fields">
+    <ResponseField name="id" type="string" required>
+      UUID of the newly created key. Use this when revoking.
+    </ResponseField>
+    <ResponseField name="name" type="string" required>
+      The label you provided.
+    </ResponseField>
+    <ResponseField name="created_at" type="string" required>
+      ISO 8601 creation timestamp.
+    </ResponseField>
+    <ResponseField name="expires_at" type="string | null" required>
+      Expiry timestamp you set, or `null` for a non-expiring key.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string" required>
+  A reminder that the key will not be shown again: `"Save this key — it will not be shown again."`
+</ResponseField>
+
+```json
+{
+  "data": {
+    "key": "atmet_3a9f1b2c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a",
+    "meta": {
+      "id": "k1a2b3c4-d5e6-7890-abcd-ef1234567890",
+      "name": "Production CI key",
+      "created_at": "2024-12-01T09:00:00.000Z",
+      "expires_at": "2025-12-01T00:00:00.000Z"
+    },
+    "message": "Save this key — it will not be shown again."
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X POST https://atmet.ai/api/api-keys \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production CI key",
+    "expires_at": "2025-12-01T00:00:00.000Z"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/api-keys", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Production CI key",
+    expires_at: "2025-12-01T00:00:00.000Z",
+  }),
+});
+
+const { data } = await response.json();
+
+// Store data.key securely — it will not be returned again
+console.log(data.key);    // "atmet_3a9f1b2c4d5e6f7a8b9c..."
+console.log(data.meta.id); // UUID to use when revoking
+```
+</CodeGroup>
+
+---
+
+## Revoke an API key
+
+Permanently deletes an API key. The key becomes invalid **immediately** — any in-flight or subsequent requests that use it receive `401 Unauthorized`. You can only revoke a key you created, or any key in a workspace where you are an owner or admin.
+
+```
+DELETE /api/api-keys/{id}
+```
+
+**Path parameters**
+
+<ParamField path="id" type="string" required>
+  The UUID of the API key to revoke. Find this in the `meta.id` field from the create response, or from the list endpoint.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+
+**Response**
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://atmet.ai/api/api-keys/k1a2b3c4-d5e6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer atmet_your_api_key"
+```
+
+```javascript JavaScript
+const keyId = "k1a2b3c4-d5e6-7890-abcd-ef1234567890";
+
+const response = await fetch(`https://atmet.ai/api/api-keys/${keyId}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.success); // true
+```
+</CodeGroup>
+
+---
+
+## Error responses
+
+All errors follow the standard Atmet error envelope.
+
+```json
+{
+  "error": {
+    "message": "API key not found."
+  }
+}
+```
+
+| HTTP status | When it occurs |
+|---|---|
+| `400 Bad Request` | Invalid or missing request body fields |
+| `401 Unauthorized` | Missing or invalid Bearer token |
+| `403 Forbidden` | Valid token but you did not create the key and are not a workspace admin |
+| `404 Not Found` | No key exists with the given ID |
+| `500 Internal Server Error` | Unexpected server-side failure |

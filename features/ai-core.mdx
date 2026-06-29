@@ -1,0 +1,64 @@
+---
+title: "AI Core: chat with your AI agent to build automations"
+sidebarTitle: "AI Core"
+description: "Use AI Core to describe what you want to automate in plain language. Your AI agent turns the conversation into a structured workflow, ready to run."
+---
+
+AI Core is the heart of Atmet — a conversational interface where you tell your AI agent what you want to automate, and it does the heavy lifting of turning your description into a structured workflow. Instead of manually wiring together steps and logic, you simply explain the outcome you need, and the agent generates a sequence of trigger and action nodes on your behalf. Every conversation you start in AI Core can be linked directly to an automation, making it the fastest path from idea to running workflow.
+
+## Starting a new conversation
+
+Open **AI Core** from the left navigation bar. If you have no active chat, the prompt appears centered on the screen and invites you to describe your goal. Type your request and press Enter — the agent greets you by name and begins building your automation.
+
+Once the conversation is active, the composer docks to the bottom of the screen so you can continue refining the workflow without losing context.
+
+<Steps>
+  <Step title="Open AI Core">
+    Click **AI Core** in the sidebar. You land on the main chat interface.
+  </Step>
+  <Step title="Describe your automation">
+    Type a plain-language description of what you want to automate. Be as specific as you can about the trigger (what starts the workflow) and the outcome (what should happen as a result).
+  </Step>
+  <Step title="Review the generated workflow">
+    The agent parses your request and produces a structured workflow — a series of trigger and action nodes — which appears in your Workflows list. Click through to the workflow canvas to review, adjust, and publish it.
+  </Step>
+</Steps>
+
+<Tip>
+  The more specific your prompt, the better the generated workflow. Instead of "notify me about emails," try "when a new email arrives in Gmail with the label 'Support', send a Slack message to #support-team with the subject and sender." Mentioning the apps, the trigger condition, and the desired outcome in a single message consistently produces higher-quality automations.
+</Tip>
+
+## How the AI creates automations from chat
+
+When you send a message, the agent interprets your intent and produces a `chat-agent` blueprint — a structured set of steps that define the nodes, providers, models, and prompts for your workflow. Each step is classified as either a **Trigger** (the event that starts the workflow) or an **Action** (what happens in response). The resulting automation appears in your **Workflows** list with a status of **In review** until you publish it.
+
+You can keep refining the workflow by continuing the conversation. Ask the agent to add a step, change the trigger condition, swap the provider, or adjust the prompt for any node — it updates the blueprint accordingly.
+
+## Managing multiple chats
+
+AI Core supports multiple simultaneous conversations. Each chat is independent and persists in your workspace history, so you can return to any previous conversation and pick up where you left off.
+
+<CardGroup cols={2}>
+  <Card title="Chat history" icon="clock-rotate-left">
+    All your past conversations are saved automatically and listed in the sidebar under **Chats**. Select any entry to reopen the conversation and its associated automation context.
+  </Card>
+  <Card title="Pinned chats" icon="thumbtack">
+    Pin a chat to keep it at the top of your list. Pinned chats are ideal for ongoing automation projects or frequently revisited workflows that are still evolving.
+  </Card>
+  <Card title="Linked automations" icon="link">
+    Each chat can be linked to a single automation. When you open a workflow on the canvas, the chat panel for each node shows the conversation that produced it, giving you full traceability from prompt to running step.
+  </Card>
+  <Card title="Shared chats" icon="users">
+    Invite teammates to a chat using the **Add user** button. Collaborators can join the conversation and contribute to the automation-building process in real time.
+  </Card>
+</CardGroup>
+
+## Creating skills from chat
+
+Beyond building automations, AI Core lets you create reusable **skills** directly from a conversation. Skills are packaged AI capabilities that can be attached to any workflow node to extend what the agent can do.
+
+To create a skill from chat, type the command `/create skill` in the AI Core prompt. This activates skill-creation mode, where you describe the capability you want to package. The agent captures your definition and adds the new skill to your workspace's skills library, ready to be attached to workflow nodes.
+
+<Note>
+  The `/create skill` command is also accessible from the **Skills** page via the **Create Skill** panel, which opens a dedicated chat interface on the right side of the screen. Both entry points use the same underlying flow — the choice is purely a matter of preference.
+</Note>

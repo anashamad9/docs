@@ -1,0 +1,148 @@
+---
+title: "Connect OAuth integrations: Gmail, Slack, GitHub, and more"
+sidebarTitle: "OAuth Apps"
+description: "Authorize Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord using OAuth 2.0 — no passwords shared, revoke access any time."
+---
+
+OAuth 2.0 integrations let you grant Atmet access to an external app through that provider's own sign-in screen. You never share a password with Atmet. Instead, you approve a specific set of permissions and the provider issues Atmet a secure access token scoped only to what your workflows need. Seven of Atmet's integrations use OAuth: Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord.
+
+<Warning>
+  Disconnecting an OAuth integration removes the connection from your workspace immediately. Any workflow that uses a trigger or action from that integration will stop working until you reconnect the app. Review which workflows depend on the integration before disconnecting.
+</Warning>
+
+## Connect an OAuth integration
+
+The steps below apply to every OAuth integration. The provider's sign-in screen varies, but the flow in Atmet is identical for all of them.
+
+<Steps>
+  <Step title="Open the Apps page">
+    In the Atmet sidebar, click **Apps** to open the integrations catalog.
+  </Step>
+  <Step title="Find the integration">
+    Browse or search for the integration you want to connect, then click its card to open the detail view.
+  </Step>
+  <Step title="Start the connection">
+    Click **Connect [Integration name]** on the integration's detail page. A confirmation modal appears, listing the permissions that will be requested.
+  </Step>
+  <Step title="Sign in to the provider">
+    Review the permissions shown in the modal, then click **Continue**. You are redirected to the provider's sign-in screen. Sign in to the account you want to link to this workspace.
+  </Step>
+  <Step title="Approve the requested permissions">
+    The provider presents the list of scopes Atmet is requesting. Review them and click **Allow** or **Authorize** to approve access.
+  </Step>
+  <Step title="Return to Atmet">
+    After approval the provider redirects you back to Atmet automatically. The integration card updates to show a **Connected** badge — you can now use its triggers and actions in your workflows.
+  </Step>
+</Steps>
+
+## Permissions by integration
+
+Each OAuth integration requests the minimum set of scopes needed to power its triggers and actions. Expand any integration below to see exactly what each scope grants.
+
+<AccordionGroup>
+  <Accordion title="Gmail" icon="envelope">
+    Gmail connects to the mailbox of the Google account you authorize. It requests three scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `gmail.modify` | Read, label, and update message metadata when workflows run. |
+    | `gmail.send` | Send outbound emails from workflow actions you approve. |
+    | `userinfo.email` | Identify which mailbox is linked to this workspace. |
+
+    **Triggers:** New email received · Email labeled
+
+    **Actions:** Send email · Add label
+  </Accordion>
+
+  <Accordion title="Slack" icon="slack">
+    Slack connects to a single Slack workspace. You choose which workspace during the OAuth flow. It requests three scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `channels:history` | Read channel history to trigger workflows from new content. |
+    | `chat:write` | Send messages to selected channels from workflow actions. |
+    | `users:read` | Resolve members and mentions when posting updates. |
+
+    **Triggers:** New channel message · Reaction added
+
+    **Actions:** Send channel message · Send direct message
+  </Accordion>
+
+  <Accordion title="Notion" icon="n">
+    Notion connects to a single Notion workspace. During authorization you select which pages and databases Atmet can access. It requests two scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `read:content` | Read page and database content to power triggers. |
+    | `update:content` | Create or edit pages from workflow actions. |
+
+    **Triggers:** New page created
+
+    **Actions:** Create page · Update page
+  </Accordion>
+
+  <Accordion title="GitHub" icon="github">
+    GitHub connects to your GitHub account and the organizations you choose to authorize during the OAuth flow. It requests two scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `repo` | Read repository data and create pull-request comments. |
+    | `read:org` | List organization repositories and team metadata. |
+
+    **Triggers:** Pull request opened · Issue opened
+
+    **Actions:** Create issue · Comment on pull request
+  </Accordion>
+
+  <Accordion title="Jira" icon="j">
+    Jira connects to an Atlassian account. During authorization you select which Jira site to link. It requests two scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `read:jira-work` | Read issue and sprint updates for workflow triggers. |
+    | `write:jira-work` | Create and update Jira issues from actions. |
+
+    **Triggers:** Issue created · Issue transitioned
+
+    **Actions:** Create issue · Add comment
+  </Accordion>
+
+  <Accordion title="Asana" icon="a">
+    Asana connects to your Asana account. You choose which workspace to authorize during the OAuth flow. It requests two scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `tasks:read` | Read tasks and project activity for triggers. |
+    | `tasks:write` | Create and update tasks from workflow actions. |
+
+    **Triggers:** Task created · Task completed
+
+    **Actions:** Create task · Update task
+  </Accordion>
+
+  <Accordion title="Discord" icon="discord">
+    Discord connects to a server where Atmet can post messages. You select the server during the OAuth flow. It requests two scopes.
+
+    | Scope | What it enables |
+    |---|---|
+    | `guilds` | Read available servers and channel metadata. |
+    | `messages.write` | Post channel messages from workflow actions. |
+
+    **Triggers:** Message posted · Member joined
+
+    **Actions:** Send message · Create thread
+  </Accordion>
+</AccordionGroup>
+
+## Reconnect or disconnect
+
+To manage an existing OAuth connection, open **Apps**, find the connected integration, and click **Manage**. From the detail page you can:
+
+- Click **Reconnect** to restart the OAuth flow and refresh a token that has expired.
+- Click **Disconnect** to remove the connection from your workspace entirely.
+
+You can also manage all connected apps from **Settings → My Integrations**.
+
+<Info>
+  OAuth tokens can expire if the provider revokes long-lived access or if you change your password. Atmet displays a **Token expired** status badge on affected integrations. Reconnecting issues a fresh token without affecting your workflow configurations.
+</Info>

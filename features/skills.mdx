@@ -1,0 +1,124 @@
+---
+title: "Skills: reusable AI capabilities for your workspace"
+sidebarTitle: "Skills"
+description: "Browse, create, and attach reusable AI skills to workflow nodes. Package lead scoring, contract analysis, and more as capabilities across any automation."
+---
+
+Skills are reusable AI capabilities that you attach to workflow nodes to give the AI agent specialized behavior beyond its default reasoning. Instead of re-describing the same logic in every workflow prompt, you define a skill once — what it does, how it reasons, and which apps it relies on — and then attach it to any node that needs it. Your workspace ships with a built-in library of skills organized by department, and you can create your own custom skills through a dedicated chat panel.
+
+## Skill categories
+
+Every skill belongs to one of four functional categories that describe how the skill operates:
+
+<CardGroup cols={2}>
+  <Card title="Reasoning" icon="brain">
+    Skills that analyze, evaluate, or interpret information. Examples: Contract Risk Detector, NDA Explainer, Product Prioritizer. Use Reasoning skills when a node needs to weigh options, flag exceptions, or summarize complex content.
+  </Card>
+  <Card title="Data" icon="table">
+    Skills that extract, normalize, or monitor structured data. Examples: Invoice Structuring, Lead Qualification, Budget Variance Monitor. Attach Data skills to nodes that ingest raw records and need to produce clean, actionable output.
+  </Card>
+  <Card title="Automation" icon="robot">
+    Skills that perform or coordinate actions across apps and systems. Examples: SEO Cluster Writer, Ticket Orchestrator, Release Notes Drafter. Automation skills are ideal for nodes that must trigger downstream actions or generate content at scale.
+  </Card>
+  <Card title="Support" icon="headset">
+    Skills that answer questions, guide users, or build operational resources. Examples: Policy QA, Playbook Builder. Use Support skills when a node needs to respond to internal queries or produce documentation from existing knowledge.
+  </Card>
+</CardGroup>
+
+## Skill statuses
+
+Each skill displays a status badge that tells you whether it is ready to use:
+
+- **Active** (green) — the skill is fully configured and safe to attach to workflow nodes.
+- **Draft** (amber) — the skill is in progress. It may still be under review or missing configuration. Attach Draft skills only in test workflows.
+
+## Skill departments
+
+The skills library is organized into departments that reflect the teams most likely to use each skill. Browse by section using the URL parameter `?section=<name>` or by navigating to a department from the skills grid.
+
+| Department | Description |
+|---|---|
+| **Marketing** | Content creation, SEO, campaign automation |
+| **Sales** | Lead scoring, deal qualification, CRM enrichment |
+| **Engineering** | Ticket routing, release notes, code-adjacent tasks |
+| **Finance** | Budget monitoring, invoice processing, cost analysis |
+| **Operations** | Contract review, playbook building, policy Q&A |
+| **Support** | Customer-facing and internal helpdesk automation |
+| **Product** | Prioritization frameworks, opportunity ranking |
+
+## Browsing the skills library
+
+Open **Skills** in the sidebar to see the full library. Your own custom skills appear in a **Pinned by you** section at the top, followed by built-in skills grouped by department.
+
+**Filtering skills**
+
+Use the search bar to find skills by name or description. Use the filter buttons to narrow by category (Reasoning, Data, Automation, Support) or by status (Active, Draft). Combine filters freely — for example, filter for **Active** skills in the **Automation** category to find only production-ready automation skills.
+
+**Viewing skill details**
+
+Click **Know more** on any skill card to open a detail dialog showing the full description, category, department, owner, and last-updated date. Skills that connect to external apps also list their connected apps here.
+
+## Built-in skills
+
+The following skills come pre-built in every workspace:
+
+<Accordion title="Contract Risk Detector — Reasoning · Operations">
+  Identifies high-risk clauses and flags legal exceptions in contract documents. Attach this skill to any workflow node that processes contracts to get automated risk annotations before human review.
+</Accordion>
+
+<Accordion title="SEO Cluster Writer — Automation · Marketing">
+  Creates SEO content clusters and generates internal linking suggestions based on a target keyword set. Useful for content workflows that need to produce multiple related articles or pages in a single run.
+</Accordion>
+
+<Accordion title="Lead Qualification — Data · Sales">
+  Scores inbound leads from CRM or form data and routes high-priority opportunities to the right owner. Attach to nodes that receive new contact records from HubSpot, Salesforce, or a webhook trigger.
+</Accordion>
+
+<Accordion title="Ticket Orchestrator — Automation · Engineering">
+  Creates and routes Jira tasks based on workflow outcomes — for example, auto-filing a bug report when an error node fires. Requires the Jira app to be connected.
+</Accordion>
+
+<Accordion title="Budget Variance Monitor — Data · Finance">
+  Tracks spending variance across teams and flags unusual cost deviations against a configured baseline. Connect this skill to scheduled workflows that pull financial data on a daily or weekly cadence.
+</Accordion>
+
+## Skill types
+
+Internally, each skill belongs to one of four types that describe its role in the execution model:
+
+| Type | Role |
+|---|---|
+| `action` | Performs a discrete operation, such as sending data or calling an external API. |
+| `trigger` | Watches for an event and starts a workflow when the condition is met. |
+| `tool` | Provides a callable capability the AI model can invoke mid-prompt (maps to the **Automation** category). |
+| `agent` | A fully autonomous reasoning skill that plans and executes multi-step tasks (maps to the **Reasoning** category). |
+
+## Using skills in workflows
+
+To attach a skill to a workflow node, open the node's chat panel from the canvas and specify the skill in the node's **Skills** property. You can attach multiple skills to a single node. The AI agent uses all attached skills as available capabilities when processing that node's prompt.
+
+<Tip>
+  Combine skills thoughtfully. Attaching a Data skill like Lead Qualification alongside an Automation skill like Ticket Orchestrator on the same node lets the agent both score a lead and immediately create a follow-up task — all in one execution step.
+</Tip>
+
+## Creating a new skill
+
+You can create custom skills from the Skills page or directly from the AI Core chat using the `/create skill` command.
+
+<Steps>
+  <Step title="Open the Create Skill panel">
+    On the **Skills** page, click the **Create Skill** button in the top-right area of the page. A chat panel slides in from the right side of the screen.
+  </Step>
+  <Step title="Describe the skill in chat">
+    The panel opens a dedicated AI chat pre-loaded with the `/create skill` command. Describe what you want the skill to do — its purpose, the reasoning or actions it should perform, and any apps it depends on.
+
+    For example: *"Create a skill that reads a GitHub pull request description and writes a structured release note entry, including the change type, affected component, and a one-line summary."*
+  </Step>
+  <Step title="Review and save">
+    The agent produces a skill definition based on your description. Review the name, category, and description that appear in the library. The skill is saved in **Draft** status by default — change it to **Active** when you are ready to use it in production workflows.
+  </Step>
+</Steps>
+
+<Note>
+  Skills you create appear in the **Pinned by you** section at the top of the Skills page, separate from the built-in library. They are visible to everyone in your workspace and can be attached to any workflow node.
+</Note>

@@ -1,0 +1,71 @@
+---
+title: "Integrations overview: connect your tools to Atmet"
+sidebarTitle: "Overview"
+description: "Atmet supports 10 integrations across 5 categories, letting workflows trigger from real events and take actions in the tools your team already uses."
+---
+
+Integrations are the bridge between Atmet and the rest of your stack. Once you connect an app, your workflows gain the ability to start from real events happening in that tool — a new email, a deal stage change, a pull request opening — and to take actions back inside it, such as sending a message, creating a task, or updating a record. Atmet supports 10 integrations across five categories, each secured by either OAuth 2.0 or an API key.
+
+<Note>
+  Integrations are workspace-scoped. Each workspace manages its own set of connected apps independently, so connections in one workspace do not carry over to another.
+</Note>
+
+## Available integrations
+
+The table below lists every supported integration, its category, auth method, available actions, and available triggers.
+
+| Integration | Category | Auth type | Actions | Triggers |
+|---|---|---|---|---|
+| Gmail | Communication | OAuth | Send email, add label | New email received, email labeled |
+| Slack | Communication | OAuth | Send channel message, send DM | New channel message, reaction added |
+| Discord | Communication | OAuth | Send message, create thread | Message posted, member joined |
+| Notion | Productivity | OAuth | Create page, update page | New page created |
+| Asana | Productivity | OAuth | Create task, update task | Task created, task completed |
+| GitHub | Developer | OAuth | Create issue, comment on PR | Pull request opened, issue opened |
+| Jira | Developer | OAuth | Create issue, add comment | Issue created, issue transitioned |
+| HubSpot | CRM | API Key | Create contact, create note | New contact, deal stage changed |
+| Salesforce | CRM | API Key | Create lead, update opportunity | New lead, opportunity updated |
+| X | Social | API Key | Create post, reply to post | New mention |
+
+## Connection types
+
+Atmet uses two authentication methods depending on the integration. Choose the guide that matches the app you want to connect.
+
+<CardGroup cols={2}>
+  <Card title="OAuth Apps" icon="lock-open" href="/integrations/oauth">
+    Connect Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord using OAuth 2.0. You authorize access directly through each provider's sign-in screen — no credentials are ever shared with Atmet.
+  </Card>
+  <Card title="API Key Apps" icon="key" href="/integrations/api-key">
+    Connect HubSpot, Salesforce, and X by generating a key in the provider's developer settings and pasting it into Atmet. Keys are encrypted at rest and never exposed after saving.
+  </Card>
+</CardGroup>
+
+## Integration categories
+
+### Communication
+
+Gmail, Slack, and Discord handle messaging and notifications. Use them to send alerts when workflows complete, react to incoming messages, or build notification pipelines across channels.
+
+### Productivity
+
+Notion and Asana track work and documentation. Connect them to create tasks automatically, update project records, or trigger workflows when someone adds a new page or marks a task complete.
+
+### Developer
+
+GitHub and Jira power engineering workflows. Automate issue triage, post PR review comments, sync sprint transitions, or start workflows when new issues are filed.
+
+### CRM
+
+HubSpot and Salesforce manage customer relationships. Trigger workflows from new contacts or deal changes, and push records back to your CRM from any workflow step.
+
+### Social
+
+X lets you publish posts and react to mentions. Use it to automate social publishing or route incoming mentions into support and monitoring workflows.
+
+## Managing your connections
+
+To view and manage every integration your workspace has connected, open **Settings → My Integrations**. Each connected app shows its current status — **Active**, **Token expired**, or **Error** — along with the date it was connected and options to manage or disconnect it.
+
+<Tip>
+  If an integration shows **Token expired**, open its detail page from the Apps catalog and click **Reconnect** to refresh access without losing your workflow configurations.
+</Tip>

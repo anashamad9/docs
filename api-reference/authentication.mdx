@@ -1,0 +1,147 @@
+---
+title: "Authenticate Atmet API requests with API keys"
+sidebarTitle: "Authentication"
+description: "Generate workspace-scoped API keys, attach them to every request via the Authorization header, and safely revoke keys you no longer need."
+---
+
+Atmet uses API keys to authenticate every REST API request. A key proves that the caller is allowed to act on behalf of a specific workspace, and it carries the same permissions as the workspace member who created it. You generate keys in the Atmet dashboard, attach them to requests with a standard bearer token header, and revoke them at any time without affecting other keys in the same workspace.
+
+<Warning>
+  Your API key is shown **exactly once** — immediately after creation in the dashboard. Atmet does not store the raw key; it stores only a SHA-256 hash. If you close the creation dialog without copying the key, you must generate a new one.
+</Warning>
+
+## Key format
+
+Every Atmet API key follows this format:
+
+```
+atmet_<40 hex characters>
+```
+
+For example:
+
+```
+atmet_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
+```
+
+Keys are generated server-side using cryptographically secure random bytes (`randomBytes(20).toString("hex")`), giving 160 bits of entropy. They are workspace-scoped — a key issued for one workspace cannot be used to access a different workspace.
+
+<Note>
+  Atmet stores only a SHA-256 hash of the raw key, never the key itself. This means the server can verify a presented key without ever being able to reconstruct or leak it.
+</Note>
+
+## Generate an API key
+
+<Steps>
+  <Step title="Open Settings">
+    In the Atmet sidebar, click **Settings** at the bottom of the navigation panel to open the workspace settings for your active workspace.
+  </Step>
+  <Step title="Go to the API Keys section">
+    Inside workspace settings, select the **API Keys** tab. You'll see a list of all active keys for your workspace, including their names, creation dates, last-used timestamps, and optional expiry dates.
+  </Step>
+  <Step title="Create a new key">
+    Click **New API key**. Enter a descriptive name (e.g. `ci-pipeline` or `production-integration`) so you can identify the key's purpose later. Optionally set an expiry date — any key with an expiry date automatically stops working after midnight UTC on that date.
+  </Step>
+  <Step title="Copy the key immediately">
+    After clicking **Create**, Atmet displays the full raw key one time only. Copy it to your secrets manager, environment variable store, or CI secrets vault right now. Once you close this dialog, the key **cannot be retrieved again**.
+  </Step>
+</Steps>
+
+## Authenticate requests
+
+Every API request must include two headers:
+
+| Header | Value | Purpose |
+|---|---|---|
+| `Authorization` | `Bearer <your-api-key>` | Authenticates the caller |
+| `X-Workspace-Id` | `<workspace-id>` | Identifies which workspace to act on |
+
+The `X-Workspace-Id` header is required because an API key is tied to a workspace — the server uses it to scope all database queries and permission checks to the correct workspace context.
+
+### cURL example
+
+```bash
+curl https://your-atmet-instance.com/api/chats \
+  -H "Authorization: Bearer atmet_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2" \
+  -H "X-Workspace-Id: ws_xxxx" \
+  -H "Content-Type: application/json"
+```
+
+### TypeScript / JavaScript example
+
+The pattern below mirrors the `apiFetch` helper used internally by the Atmet frontend, which automatically injects the `x-workspace-id` header for every request against the active workspace:
+
+```typescript
+const ATMET_BASE_URL = "https://your-atmet-instance.com/api";
+const ATMET_API_KEY  = process.env.ATMET_API_KEY!;   // atmet_...
+const WORKSPACE_ID   = process.env.ATMET_WORKSPACE_ID!; // ws_xxxx
+
+async function atmetFetch(
+  path: string,
+  init: RequestInit = {}
+): Promise<Response> {
+  const headers = new Headers(init.headers);
+  headers.set("Authorization", `Bearer ${ATMET_API_KEY}`);
+  headers.set("X-Workspace-Id", WORKSPACE_ID);
+  headers.set("Content-Type", "application/json");
+
+  return fetch(`${ATMET_BASE_URL}${path}`, { ...init, headers });
+}
+
+// Example: list all chats
+const response = await atmetFetch("/chats");
+const { data } = await response.json();
+console.log(data.chats);
+```
+
+<Tip>
+  Store your API key in an environment variable (`ATMET_API_KEY`) rather than hard-coding it in source files. Never commit a raw key to version control.
+</Tip>
+
+## Key expiry
+
+When you create an API key you can set an optional `expires_at` date. Once that date passes, Atmet rejects any request made with that key and returns:
+
+```json
+HTTP 401 Unauthorized
+
+{
+  "error": {
+    "message": "API key has expired."
+  }
+}
+```
+
+You can see each key's expiry date in **Settings → API Keys**. Rotate expiring keys before the deadline to avoid downtime — create the new key first, update your integration, then revoke the old one.
+
+## Revoke a key
+
+To permanently invalidate a key, send a `DELETE` request to `/api/api-keys/{id}`. You need the key's ID (returned in the `meta.id` field when the key was created, and available in the API Keys settings list).
+
+Only the workspace member who created the key **or** a workspace admin can revoke it.
+
+```bash
+curl -X DELETE https://your-atmet-instance.com/api/api-keys/key_xxxx \
+  -H "Authorization: Bearer atmet_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2" \
+  -H "X-Workspace-Id: ws_xxxx"
+```
+
+A successful deletion returns:
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+Revocation is immediate and irreversible. Any in-flight requests using the revoked key will start receiving `401 Unauthorized` errors. You can also revoke keys from the **Settings → API Keys** dashboard without touching the API.
+
+## Error reference
+
+| Status | Cause | Resolution |
+|---|---|---|
+| `401 Unauthorized` | Missing `Authorization` header, malformed key, revoked key, or expired key | Generate a new key or check the header format |
+| `403 Forbidden` | Valid key but the workspace member role lacks permission for this action | Use a key created by a workspace admin, or request elevated permissions |
+| `400 Bad Request` | Missing `X-Workspace-Id` header or it does not match the workspace the key belongs to | Include the correct workspace ID in the `X-Workspace-Id` header |

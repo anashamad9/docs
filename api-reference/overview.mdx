@@ -1,0 +1,114 @@
+---
+title: "Atmet REST API — overview and base URL"
+sidebarTitle: "Overview"
+description: "Explore the Atmet REST API: base URL conventions, JSON request and response shapes, standard error format, and HTTP status codes."
+---
+
+The Atmet REST API gives you programmatic access to every resource in your workspace — chats, agents, members, API keys, and more. All endpoints accept and return JSON, follow a consistent response envelope, and authenticate via bearer tokens. This reference covers the conventions every endpoint shares; individual endpoint pages describe the specific fields and behaviors for each resource.
+
+<Note>
+  The Atmet API is currently in **alpha**. Endpoint paths, request shapes, and response fields may change between releases. Pin your integration to a specific Atmet version and review the changelog before upgrading.
+</Note>
+
+## Base URL
+
+Every endpoint is relative to the base URL of your Atmet deployment. If you are running a self-hosted instance, substitute your own domain:
+
+```
+https://your-atmet-instance.com/api
+```
+
+For example, the API keys list endpoint is available at:
+
+```
+https://your-atmet-instance.com/api/api-keys
+```
+
+There is no version segment in the path — the API version is tied to the Atmet application release you are running.
+
+## Request format
+
+All request bodies must be valid JSON. Set the `Content-Type` header to `application/json` on every request that includes a body:
+
+```bash
+Content-Type: application/json
+```
+
+Requests that omit the header or send malformed JSON receive a `400 Bad Request` response.
+
+## Response envelope
+
+Every response — success or error — is a JSON object. Successful responses wrap the resource payload inside a top-level `data` key. Error responses wrap the reason inside a top-level `error` key.
+
+<CodeGroup>
+
+```json Success response
+{
+  "data": {
+    "workspace": {
+      "id": "ws_xxxx",
+      "name": "Acme Corp",
+      "plan": "pro",
+      "owner_id": "user_xxxx",
+      "created_at": "2024-11-01T09:00:00.000Z"
+    }
+  }
+}
+```
+
+```json Error response
+{
+  "error": {
+    "message": "API key not found."
+  }
+}
+```
+
+</CodeGroup>
+
+The shape of the `data` payload varies by endpoint — each endpoint page documents the exact fields returned. The `error.message` string is always human-readable and safe to surface to your users.
+
+## HTTP status codes
+
+The API uses a standard subset of HTTP status codes. Inspect the status code first, then parse the body for details.
+
+<CardGroup cols={2}>
+  <Card title="200 OK" icon="circle-check">
+    The request succeeded. The response body contains the requested resource or operation result inside `data`.
+  </Card>
+  <Card title="201 Created" icon="circle-plus">
+    A new resource was successfully created. The response body contains the newly created resource inside `data`.
+  </Card>
+  <Card title="400 Bad Request" icon="triangle-exclamation">
+    The request body failed validation or contained malformed JSON. The `error.message` field describes which field or constraint was violated.
+  </Card>
+  <Card title="401 Unauthorized" icon="lock">
+    The `Authorization` header is missing, malformed, or contains an expired or revoked API key. Re-authenticate and retry.
+  </Card>
+  <Card title="403 Forbidden" icon="ban">
+    The API key is valid but the authenticated workspace member does not have permission to perform the requested action (e.g. a non-admin attempting an admin-only operation).
+  </Card>
+  <Card title="404 Not Found" icon="circle-xmark">
+    The resource identified by the URL path or query parameter does not exist, or the requesting key does not have visibility into it.
+  </Card>
+  <Card title="500 Internal Server Error" icon="server">
+    An unexpected server-side error occurred. These are not caused by client input. Retry with exponential back-off and contact support if the error persists.
+  </Card>
+</CardGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" href="/api-reference/authentication" icon="key">
+    Learn how to create API keys and attach them to every request.
+  </Card>
+  <Card title="API Keys endpoints" href="/api-reference/api-keys" icon="code">
+    List, create, and revoke API keys via the REST API.
+  </Card>
+  <Card title="Workspaces endpoints" href="/api-reference/workspaces" icon="building">
+    Retrieve and manage your Atmet workspaces.
+  </Card>
+  <Card title="Chats endpoints" href="/api-reference/chats" icon="message">
+    Start conversations and stream AI responses.
+  </Card>
+</CardGroup>

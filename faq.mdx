@@ -1,0 +1,195 @@
+---
+title: "Frequently asked questions about Atmet"
+sidebarTitle: "FAQ"
+description: "Answers to the most common questions about Atmet's features, integrations, Skills, Workflows, plans, account management, and getting started."
+---
+
+Atmet is an AI-powered workspace platform that helps teams automate business workflows through conversational AI. Whether you're just getting started or looking to unlock advanced features, the answers below cover the questions we hear most often. If you can't find what you need here, visit [atmet.ai](https://atmet.ai) or reach out to our support team.
+
+<AccordionGroup>
+
+<Accordion title="What is Atmet?">
+Atmet is an AI-powered workspace SaaS platform that lets teams automate business workflows by chatting with an AI agent. You describe what you need in plain language, and Atmet builds the workflow steps for you. You can connect the apps your team already uses, build reusable Skills, and run automations on a schedule or trigger them manually — all without writing code.
+</Accordion>
+
+<Accordion title="How do I get access?">
+Atmet is currently in early access alpha. To request access, join the waitlist at [atmet.ai](https://atmet.ai). Once your request is reviewed and approved, you'll receive an email invitation to set up your account. Approved waitlist members sign in using a one-time passcode sent to their email on first login.
+
+<Note>
+  If you haven't received your invitation after joining the waitlist, check your spam folder or contact support at [atmet.ai](https://atmet.ai).
+</Note>
+</Accordion>
+
+<Accordion title="What integrations does Atmet support?">
+Atmet currently supports ten integrations across communication, productivity, CRM, developer tools, and social categories:
+
+<CardGroup cols={2}>
+  <Card title="Gmail" icon="envelope">
+    Send and organize email activity directly from workflows. Uses OAuth 2.0.
+  </Card>
+  <Card title="Slack" icon="slack">
+    Post updates and listen for channel activity in real time. Uses OAuth 2.0.
+  </Card>
+  <Card title="Notion" icon="book">
+    Create and update pages, tasks, and databases automatically. Uses OAuth 2.0.
+  </Card>
+  <Card title="HubSpot" icon="hubspot">
+    Sync contacts and deal activity with your CRM workflows. Uses an API key (Private App token).
+  </Card>
+  <Card title="GitHub" icon="github">
+    Track pull requests and automate repository operations. Uses OAuth 2.0.
+  </Card>
+  <Card title="Jira" icon="jira">
+    Sync issue activity and sprint milestones into workflows. Uses OAuth 2.0.
+  </Card>
+  <Card title="Asana" icon="list-check">
+    Track tasks and project updates across teams. Uses OAuth 2.0.
+  </Card>
+  <Card title="Salesforce" icon="salesforce">
+    Automate lead, account, and opportunity operations. Uses an API key.
+  </Card>
+  <Card title="Discord" icon="discord">
+    Connect community channels and bot notifications. Uses OAuth 2.0.
+  </Card>
+  <Card title="X" icon="x-twitter">
+    Publish posts and react to social engagement signals. Uses an API key.
+  </Card>
+</CardGroup>
+
+Each integration has a set of **triggers** (events that start a workflow) and **actions** (steps a workflow performs). You can connect and manage all integrations from the **Apps** page in the sidebar.
+</Accordion>
+
+<Accordion title="What are Skills?">
+Skills are reusable AI capabilities that you attach to nodes inside a workflow. Instead of writing the same logic repeatedly, you build a Skill once and use it across multiple workflows.
+
+Skills come in four types:
+
+- **Reasoning** — Analytical and decision-making logic
+- **Data** — Data retrieval, transformation, and lookup
+- **Automation** — Action execution and process control
+- **Support** — Customer-facing or team-facing response handling
+
+You create and manage Skills from the **Skills** page in the sidebar. A Skill must have an **Active** status before it can be used inside a workflow node.
+</Accordion>
+
+<Accordion title="How do Workflows work?">
+A workflow is a visual automation built on a canvas. Each workflow contains one or more **nodes** — a node can be a trigger (the event that starts the workflow) or an action (what happens next). You can chat with the AI agent to generate workflow steps from a plain-language description, or build nodes manually.
+
+Once your workflow is ready, you can:
+
+- **Run it manually** from the workflow canvas at any time
+- **Schedule it** to run automatically at a set interval using the auto-run schedule setting
+
+Workflows appear in the **Workflows** list with a status of Running, In review, or Done. Click any workflow to open it on the canvas and make changes.
+
+<Tip>
+  Start a new workflow by selecting **Build Project** from the sidebar and describing what you want to automate in the AI Core chat.
+</Tip>
+</Accordion>
+
+<Accordion title="Can I invite my team?">
+Yes. To invite teammates to your workspace:
+
+<Steps>
+  <Step title="Open Settings">
+    Click the settings icon in the sidebar to open the Settings panel.
+  </Step>
+  <Step title="Go to Members">
+    Select **Members** from the settings navigation.
+  </Step>
+  <Step title="Send an invitation">
+    Click **Invite**, enter one or more email addresses, and send. Each person receives an email invitation to join the workspace.
+  </Step>
+</Steps>
+
+Workspace members can have one of four roles: **Super Admin**, **Admin**, **Owner**, or **Member**. Roles control what each person can view, edit, and manage inside the workspace.
+</Accordion>
+
+<Accordion title="How are tokens counted?">
+Tokens represent your AI usage. Each interaction with the AI agent — whether through the **AI Core** chat or inside a running workflow — consumes tokens from your workspace's monthly allocation.
+
+To check your current usage:
+
+1. Open **Settings** from the sidebar.
+2. Navigate to **Usage and limits**.
+3. Review your token consumption, along with file and storage usage.
+
+<Note>
+  If your workspace is approaching its token limit, contact your workspace admin. Admins can review and adjust limits from **Settings → Usage and limits**.
+</Note>
+</Accordion>
+
+<Accordion title="What plans are available?">
+Atmet offers three plans:
+
+| Plan | Best for |
+|---|---|
+| **Free** | Individuals and small teams exploring the platform |
+| **Pro** | Growing teams who need higher limits and advanced features |
+| **Enterprise** | Organizations requiring custom limits, SSO, and dedicated support |
+
+Atmet is currently in early access alpha, so pricing details are not yet public. [Contact us](https://atmet.ai) to learn more about Pro and Enterprise options.
+</Accordion>
+
+<Accordion title="How do I reset my password?">
+You can reset your password in two ways:
+
+**From inside the app:**
+1. Open **Settings** in the sidebar.
+2. Select **Account**.
+3. Under the **Password** section, click **Send a link**. Atmet will email you a password reset link.
+
+**From the sign-in page:**
+1. Go to the Atmet sign-in page.
+2. Click **Forgot password** and enter your email address.
+3. Check your inbox for the reset link.
+
+<Tip>
+  If you don't receive the email within a few minutes, check your spam or junk folder.
+</Tip>
+</Accordion>
+
+<Accordion title="Is my data secure?">
+Yes. Atmet takes several steps to keep your data and credentials safe:
+
+- **API keys** are stored encrypted and are never shown in plain text after you save them. If you need to rotate a key, you must enter a new one.
+- **OAuth integrations** (Gmail, Slack, Notion, GitHub, Jira, Asana, Discord) use scoped permissions — Atmet only requests the access required for the features you choose to use, and you can revoke access at any time from your connected app's settings.
+- **Session security** is enforced through configurable session timeouts at the workspace level.
+
+For data retention, export, and deletion options, visit **Settings → Data controls**.
+</Accordion>
+
+<Accordion title="Can I use Atmet via API?">
+Yes. Atmet exposes a REST API that you can use to interact with your workspace programmatically. To get started:
+
+<Steps>
+  <Step title="Open Settings">
+    Click the settings icon in the sidebar.
+  </Step>
+  <Step title="Go to API Keys">
+    Select **API Keys** from the settings navigation (available under your account section).
+  </Step>
+  <Step title="Generate a key">
+    Click **Generate** to create a new API key. Copy it immediately — it won't be shown again.
+  </Step>
+  <Step title="Use the key">
+    Include the key in the `Authorization` header of your API requests.
+  </Step>
+</Steps>
+
+<Warning>
+  Treat your API key like a password. Do not commit it to source control or share it publicly. If a key is compromised, delete it and generate a new one.
+</Warning>
+</Accordion>
+
+<Accordion title="How do I delete my account?">
+You can permanently delete your account from **Settings → Account → Danger Zone → Delete my account**.
+
+<Warning>
+  Account deletion is **irreversible**. All your data, workspaces, and associated content will be permanently removed and cannot be recovered. Make sure you have exported any data you need before proceeding.
+</Warning>
+
+If you only want to leave a workspace without deleting your account, ask the workspace admin to remove you from that workspace instead.
+</Accordion>
+
+</AccordionGroup>

@@ -1,0 +1,126 @@
+---
+title: "Connect API key integrations: HubSpot, Salesforce, and X"
+sidebarTitle: "API Key Apps"
+description: "Connect HubSpot, Salesforce, and X by generating an API key in each provider's developer settings and pasting it into Atmet."
+---
+
+API key integrations require you to create a credential in the provider's own settings — typically a private app token, an API key, or a key-and-secret pair — and then paste it into Atmet. Unlike OAuth, there is no redirect to a sign-in screen. You control exactly which key is used and can rotate it any time by reconnecting. Atmet supports three API key integrations: HubSpot, Salesforce, and X.
+
+<Warning>
+  API keys are encrypted and stored securely. Once you save a key, Atmet will not display it again. Keep a copy in a secure location such as a password manager before saving, in case you need to reference it later.
+</Warning>
+
+## Connect an API key integration
+
+The steps below apply to every API key integration. Provider setup details vary — see the per-integration guides further down this page for specifics.
+
+<Steps>
+  <Step title="Open the provider's developer settings">
+    Sign in to the provider's platform and navigate to the developer or API settings area. Specific links for each provider are listed in the integration guides below.
+  </Step>
+  <Step title="Create an API key or token">
+    Follow the provider's instructions to generate a new API key, private app token, or key-and-secret pair. Give it a descriptive name so you can identify it later.
+  </Step>
+  <Step title="Copy the key">
+    Copy the key to your clipboard immediately after generation. Most providers show it only once.
+  </Step>
+  <Step title="Open the integration in Atmet">
+    In the Atmet sidebar, click **Apps**, find the integration, and click its card to open the detail page.
+  </Step>
+  <Step title="Paste the key">
+    Click **Connect [Integration name]** to open the connection drawer. Paste your key into the **API key** field. You can also add an optional label in the **Key name** field to help identify which key is in use.
+  </Step>
+  <Step title="Test the connection">
+    Click **Test connection**. Atmet sends a verification request to the provider using your key. A success message confirms the key is valid and the credentials have the right permissions.
+  </Step>
+  <Step title="Save to activate">
+    Click **Save**. The integration is now active and its triggers and actions are available in your workflows.
+  </Step>
+</Steps>
+
+<Tip>
+  Always run the connection test before clicking Save. A successful test confirms that the key has the required permissions and prevents silent failures in your workflows later.
+</Tip>
+
+## Setup guides by integration
+
+<AccordionGroup>
+  <Accordion title="HubSpot" icon="h">
+    HubSpot uses private app tokens to authenticate API requests. Private apps are scoped to specific CRM permissions, giving you fine-grained control over what Atmet can access.
+
+    **Where to create a token:** [app.hubspot.com](https://app.hubspot.com/) → Settings → Integrations → Private Apps
+
+    **Steps:**
+    1. In your HubSpot account, open **Settings** and navigate to **Integrations → Private Apps**.
+    2. Click **Create a private app**, give it a name such as "Atmet", and select the required scopes.
+    3. Click **Create app** and copy the token shown on the confirmation screen.
+    4. Open **Apps** in Atmet, click the HubSpot card, paste the token, test the connection, and save.
+
+    **Permissions Atmet uses:**
+
+    | Permission | What it enables |
+    |---|---|
+    | `crm.objects.contacts.read` | Read contact records for trigger and lookup steps. |
+    | `crm.objects.deals.write` | Create and update deals from workflow actions. |
+
+    **Triggers:** New contact · Deal stage changed
+
+    **Actions:** Create contact · Create note
+  </Accordion>
+
+  <Accordion title="Salesforce" icon="s">
+    Salesforce uses an API-enabled integration user key to authenticate. You create this key in Salesforce Setup and configure the appropriate permissions for the objects Atmet needs to read and write.
+
+    **Where to create a key:** [login.salesforce.com](https://login.salesforce.com/) → Setup → Apps → App Manager
+
+    **Steps:**
+    1. Sign in to Salesforce and open **Setup** (gear icon in the top navigation).
+    2. Search for **App Manager** in Quick Find, then click **New Connected App**.
+    3. Enable **API access**, configure the required OAuth scopes, and save the app.
+    4. Copy the generated API key or consumer secret from the app detail page.
+    5. Open **Apps** in Atmet, click the Salesforce card, paste the key, test the connection, and save.
+
+    **Permissions Atmet uses:**
+
+    | Permission | What it enables |
+    |---|---|
+    | `objects.read` | Read CRM records for trigger conditions and lookups. |
+    | `objects.write` | Create and update Salesforce records from actions. |
+
+    **Triggers:** New lead · Opportunity updated
+
+    **Actions:** Create lead · Update opportunity
+  </Accordion>
+
+  <Accordion title="X (Twitter)" icon="x-twitter">
+    X uses app-level API keys generated in the X Developer Portal. You need to create a project and an app, then generate a key and secret for your environment.
+
+    **Where to create keys:** [developer.x.com](https://developer.x.com/) → Dashboard → Projects & Apps
+
+    **Steps:**
+    1. Sign in to the [X Developer Portal](https://developer.x.com/) and open your **Dashboard**.
+    2. Create a new project and app if you don't already have one, or open an existing app.
+    3. Navigate to the **Keys and Tokens** tab and click **Generate** next to **API Key and Secret**.
+    4. Copy the API key immediately — it is shown only once.
+    5. Open **Apps** in Atmet, click the X card, paste the key, test the connection, and save.
+
+    **Permissions Atmet uses:**
+
+    | Permission | What it enables |
+    |---|---|
+    | `tweet.read` | Read post events that can trigger workflows. |
+    | `tweet.write` | Publish posts from workflow actions. |
+
+    **Triggers:** New mention
+
+    **Actions:** Create post · Reply to post
+  </Accordion>
+</AccordionGroup>
+
+## Rotate or update a key
+
+If you need to rotate an API key — for example, after a security review or when a key is revoked — open the integration's detail page in **Apps** and click **Reconnect**. The connection drawer reopens so you can paste a new key, test it, and save. The old key is replaced once you save successfully.
+
+<Info>
+  Rotating a key does not affect your workflow configurations. Workflows resume using the new credentials as soon as the updated key is saved.
+</Info>

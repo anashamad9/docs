@@ -1,0 +1,145 @@
+---
+title: "Usage, limits, and billing for your Atmet workspace"
+sidebarTitle: "Usage & Limits"
+description: "Monitor token, file, and storage usage against your workspace limits, manage billing and payment methods, and control workspace data retention."
+---
+
+The Usage and limits panel gives you a live view of how much of your workspace's allocated resources have been consumed, lets workspace Owners set per-user token caps, and provides a gateway to billing and data management. To open it, click **Settings** in the bottom-left corner of the sidebar, then select **Usage and limits** from the left panel. Workspace Admins can view usage; only Owners can adjust per-user limits.
+
+## Metered resources
+
+Atmet tracks three key resource types for every workspace:
+
+<CardGroup cols={3}>
+  <Card title="Tokens" icon="microchip">
+    The primary unit of AI consumption. Tokens are consumed each time the AI processes input and generates output — in AI Core chat conversations and when running workflow automations.
+  </Card>
+  <Card title="Files" icon="file">
+    The total number of files uploaded to your workspace. Each document, image, or asset you attach counts toward your workspace's file limit.
+  </Card>
+  <Card title="Storage" icon="hard-drive">
+    The total disk space used by uploaded files, measured in gigabytes. Storage consumption is the sum of the sizes of all files in your workspace.
+  </Card>
+</CardGroup>
+
+<Info>
+  Token usage accumulates from two sources: **AI Core** chat sessions (every message you exchange with the assistant) and **workflow executions** (every time an automation runs a node that calls an AI model). Both count toward the same monthly token cap for your workspace.
+</Info>
+
+---
+
+## Viewing current usage
+
+The top of the Usage and limits panel shows a summary of your workspace's resource consumption for the selected time range. The five summary cards display:
+
+| Resource | What it measures |
+|---|---|
+| **Tokens** | AI tokens consumed (used / monthly cap) |
+| **Files** | Number of files uploaded (used / max files) |
+| **Storage** | Disk space used in GB (used / max GB) |
+| **Automations** | Number of workflow runs in the selected period |
+| **Chats** | Number of AI Core conversations started in the selected period |
+
+Below the summary cards, a bar chart gives a visual snapshot of usage across the period. Use the **time range** dropdown to switch between:
+
+- **This week** — the past 7 days
+- **This month** — the past 30 days
+- **All time** — since the workspace was created
+
+If you are a workspace Owner, use the **scope** dropdown to toggle between **Workspace** (aggregate across all members) and **My usage** (your individual consumption only). Members see only their own usage.
+
+Click **Refresh** at any time to reload the latest figures from the server.
+
+### Usage status table
+
+The detailed table beneath the chart shows each resource with a progress bar:
+
+- A **green** badge labeled "Within limit" means you are below 80 % of the cap.
+- A **red** badge labeled "Near limit" means you have consumed 80 % or more of the cap. Take action to avoid service interruption.
+
+<Tip>
+  Set a reminder to check your usage mid-month, especially if your workspace runs high-frequency automations. Approaching your token or file limit mid-cycle can interrupt active workflows. Workspace Owners can adjust per-user token caps to distribute consumption more evenly across the team.
+</Tip>
+
+---
+
+## Workspace plans
+
+Your workspace operates on one of three plans:
+
+<Tabs>
+  <Tab title="Free">
+    The Free plan gives you access to core Atmet features at no cost. It includes a monthly token cap, a limit on the number of files you can upload, and a storage ceiling. The default monthly token cap on the Free plan is **50,000 tokens**. This plan is ideal for individuals and small teams exploring Atmet.
+  </Tab>
+  <Tab title="Pro">
+    The Pro plan expands your limits and unlocks additional capabilities. Token caps, file limits, and storage allocations are higher than the Free plan, and the plan supports more seats. Billed per user per month.
+  </Tab>
+  <Tab title="Enterprise">
+    The Enterprise plan is for organizations that need custom limits, dedicated support, advanced access policies, and platform-level SLAs. Contact the Atmet team to discuss your requirements and configure a plan that fits your scale.
+  </Tab>
+</Tabs>
+
+---
+
+## Per-user token limits (Owners only)
+
+Workspace Owners can set an individual monthly token cap for each member. This is useful for controlling costs when some members run high-consumption workflows.
+
+<Steps>
+  <Step title="Open the per-user limits table">
+    In the Usage and limits panel, scroll to the **Per-user limits** section. This section is visible only to workspace Owners.
+  </Step>
+  <Step title="Set a cap for a member">
+    Find the member in the table. Enter a positive integer in the **Monthly token cap** column. Leave the field empty to inherit the workspace-wide token cap.
+  </Step>
+  <Step title="Save limits">
+    Click **Save limits** at the top of the section. Changes apply to all edited members simultaneously.
+  </Step>
+</Steps>
+
+<Note>
+  A blank monthly token cap means the member inherits the workspace's default token cap. Any positive integer you enter overrides that default for that specific member only. You can reset a cap back to the workspace default by clearing the field and saving again.
+</Note>
+
+---
+
+## Billing
+
+The **Billing** section in Settings shows your current plan, upcoming renewal date, and seat and credit summary. Click **Billing portal** to open the external billing portal where you can:
+
+- View and update **payment methods**
+- Download **invoices** for past billing periods
+- Review your full **billing history**
+- **Cancel** your subscription
+
+<Accordion title="Seats and credits in billing">
+  The Billing panel shows two quick-view meters:
+
+  - **Seats** — the number of active workspace members versus your seat limit. Click **Manage seats** to go directly to the Members settings panel.
+  - **Credits** — token consumption versus your monthly token cap. Click **Usage** to go directly to the Usage and limits panel.
+
+  Both meters update in real time as members join and as token consumption accumulates.
+</Accordion>
+
+If you need help with billing, click **Contact support** in the Billing section to reach the Atmet support team by email.
+
+---
+
+## Data controls
+
+The **Data controls** section in Settings lets you permanently remove workspace data. These actions are destructive and cannot be undone.
+
+<Warning>
+  Data deletion actions are permanent. Deleted files, chats, and workflow data cannot be recovered. Make sure you have exported any data you need before proceeding.
+</Warning>
+
+<CardGroup cols={2}>
+  <Card title="Delete all uploaded files" icon="trash">
+    Permanently removes all documents and assets uploaded to your workspace. This frees up storage but also removes any files referenced by existing workflows or chat conversations.
+  </Card>
+  <Card title="Delete all chats and workflows" icon="trash">
+    Permanently removes all AI Core conversation history and all workflow data from your workspace. Running automations will be disabled as part of this action.
+  </Card>
+</CardGroup>
+
+Both actions require confirmation before they execute. Only workspace Admins and Owners can access Data controls.

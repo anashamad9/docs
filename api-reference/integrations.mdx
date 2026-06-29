@@ -1,0 +1,446 @@
+---
+title: "Integrations API — list and manage connected apps"
+sidebarTitle: "Integrations"
+description: "List available integrations, check connection status, connect API key apps, test credentials, and disconnect integrations for your Atmet workspace."
+---
+
+The Integrations API lets you query the full catalog of supported apps, check the connection status of each one within your workspace, connect integrations that use API key authentication, test existing connections, and remove integrations you no longer need. Every endpoint requires a valid Bearer token and a workspace ID — connection state is always scoped to a single workspace.
+
+<Note>
+  **OAuth integrations must be connected through the browser UI.** Gmail, Slack, Notion, GitHub, Jira, Asana, and Discord all use the OAuth 2.0 flow, which requires a redirect back to your browser to complete authorization. You cannot initiate an OAuth flow from the API. Use the API to read connection status and disconnect OAuth integrations only. To connect them, visit the **Apps** page inside your Atmet workspace.
+</Note>
+
+---
+
+## The Integration object
+
+Every endpoint that returns an integration uses the same object shape.
+
+<ResponseField name="slug" type="string" required>
+  Unique identifier for the integration (e.g. `gmail`, `hubspot`). See the full list of valid slugs below.
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Human-readable display name (e.g. `Gmail`, `HubSpot`).
+</ResponseField>
+
+<ResponseField name="logo" type="string" required>
+  Absolute URL to the integration's logo image.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Short description of what the integration does inside Atmet workflows.
+</ResponseField>
+
+<ResponseField name="category" type="string" required>
+  Integration category. One of: `communication`, `productivity`, `crm`, `developer`, `social`, `generic`.
+</ResponseField>
+
+<ResponseField name="authType" type="string" required>
+  Authentication method required to connect. Either `oauth` or `apikey`.
+</ResponseField>
+
+<ResponseField name="connected" type="boolean" required>
+  `true` if this integration is currently connected to the workspace, `false` otherwise.
+</ResponseField>
+
+<ResponseField name="status" type="string | null">
+  Connection health. One of `active`, `expired`, `error`, or `null` when not connected.
+</ResponseField>
+
+<ResponseField name="connected_at" type="string | null">
+  ISO 8601 timestamp of when the integration was connected, or `null` when not connected.
+</ResponseField>
+
+<Accordion title="Valid integration slugs">
+  The following slugs are recognized by every `/api/integrations/{slug}` endpoint. Requests using any other value return `404 Not Found`.
+
+  | Slug | Name | Auth type |
+  |---|---|---|
+  | `gmail` | Gmail | OAuth |
+  | `slack` | Slack | OAuth |
+  | `notion` | Notion | OAuth |
+  | `github` | GitHub | OAuth |
+  | `jira` | Jira | OAuth |
+  | `asana` | Asana | OAuth |
+  | `discord` | Discord | OAuth |
+  | `hubspot` | HubSpot | API key |
+  | `salesforce` | Salesforce | API key |
+  | `x` | X | API key |
+</Accordion>
+
+---
+
+## List all integrations
+
+Returns every integration from the Atmet catalog merged with your workspace's current connection state. Integrations you haven't connected are included with `connected: false`.
+
+```
+GET /api/integrations
+```
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace to scope connection state to |
+
+**Response**
+
+```json
+{
+  "data": {
+    "integrations": [Integration]
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/integrations \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id"
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/integrations", {
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.integrations);
+```
+</CodeGroup>
+
+**Example response**
+
+```json
+{
+  "data": {
+    "integrations": [
+      {
+        "slug": "gmail",
+        "name": "Gmail",
+        "logo": "https://cdn.simpleicons.org/gmail",
+        "description": "Send and organize email activity directly from workflows.",
+        "category": "communication",
+        "authType": "oauth",
+        "connected": true,
+        "status": "active",
+        "connected_at": "2024-11-03T09:14:22.000Z"
+      },
+      {
+        "slug": "hubspot",
+        "name": "HubSpot",
+        "logo": "https://cdn.simpleicons.org/hubspot",
+        "description": "Sync contacts and deal activity with your CRM workflows.",
+        "category": "crm",
+        "authType": "apikey",
+        "connected": false,
+        "status": null,
+        "connected_at": null
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Get a single integration
+
+Returns one integration from the catalog, merged with its connection state in your workspace.
+
+```
+GET /api/integrations/{slug}
+```
+
+**Path parameters**
+
+<ParamField path="slug" type="string" required>
+  The integration's unique identifier. Must be one of the valid slugs listed in the accordion above. Returns `404` if unrecognized.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace to check connection state against |
+
+**Response**
+
+```json
+{
+  "data": {
+    "integration": Integration
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl https://atmet.ai/api/integrations/hubspot \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id"
+```
+
+```javascript JavaScript
+const slug = "hubspot";
+
+const response = await fetch(`https://atmet.ai/api/integrations/${slug}`, {
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.integration);
+```
+</CodeGroup>
+
+**Example response**
+
+```json
+{
+  "data": {
+    "integration": {
+      "slug": "hubspot",
+      "name": "HubSpot",
+      "logo": "https://cdn.simpleicons.org/hubspot",
+      "description": "Sync contacts and deal activity with your CRM workflows.",
+      "category": "crm",
+      "authType": "apikey",
+      "connected": true,
+      "status": "active",
+      "connected_at": "2024-11-10T14:30:00.000Z"
+    }
+  }
+}
+```
+
+---
+
+## Connect an API key integration
+
+Stores an API key credential and marks the integration as connected for your workspace. This endpoint only works for integrations with `authType: "apikey"` — currently HubSpot, Salesforce, and X. Calling it for an OAuth-based integration returns `400 Bad Request`.
+
+If the integration is already connected, this call replaces the existing credentials (upsert behaviour).
+
+```
+POST /api/integrations/{slug}/connect
+```
+
+**Path parameters**
+
+<ParamField path="slug" type="string" required>
+  The slug of the API key integration to connect. Accepted values: `hubspot`, `salesforce`, `x`.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace to connect the integration to |
+| `Content-Type` | Yes | `application/json` |
+
+**Request body**
+
+<ParamField body="api_key" type="string" required>
+  The third-party API key or access token for the integration. For HubSpot, use a private app token. For Salesforce, use an API-enabled integration user key. For X, use the app API key from the X developer portal.
+</ParamField>
+
+<ParamField body="key_name" type="string">
+  An optional label to identify the key (e.g. `"Production HubSpot token"`). Stored alongside the credential for your own reference.
+</ParamField>
+
+**Response**
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X POST https://atmet.ai/api/integrations/hubspot/connect \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "api_key": "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "key_name": "Production HubSpot token"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/integrations/hubspot/connect", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    api_key: "pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    key_name: "Production HubSpot token",
+  }),
+});
+
+const { data } = await response.json();
+console.log(data.success); // true
+```
+</CodeGroup>
+
+---
+
+## Test an integration connection
+
+Validates that the stored credentials for an API key integration are still functional. Like the connect endpoint, this only works for integrations with `authType: "apikey"`.
+
+```
+POST /api/integrations/{slug}/test
+```
+
+**Path parameters**
+
+<ParamField path="slug" type="string" required>
+  The slug of the API key integration to test. Accepted values: `hubspot`, `salesforce`, `x`.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace whose stored credentials to test |
+| `Content-Type` | Yes | `application/json` |
+
+**Response**
+
+<ResponseField name="success" type="boolean" required>
+  `true` if the stored credentials successfully authenticated with the third-party service.
+</ResponseField>
+
+<ResponseField name="message" type="string" required>
+  A human-readable result summary, e.g. `"Connection successful."`.
+</ResponseField>
+
+```json
+{
+  "data": {
+    "success": true,
+    "message": "Connection successful."
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X POST https://atmet.ai/api/integrations/hubspot/test \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch("https://atmet.ai/api/integrations/hubspot/test", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+    "Content-Type": "application/json",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.message); // "Connection successful."
+```
+</CodeGroup>
+
+---
+
+## Disconnect an integration
+
+Removes the integration connection from your workspace. For API key integrations, the stored credentials are deleted. For OAuth integrations, the token is removed from Atmet — you may also want to revoke access separately in the third-party app's settings.
+
+```
+DELETE /api/integrations/{slug}
+```
+
+**Path parameters**
+
+<ParamField path="slug" type="string" required>
+  The slug of the integration to disconnect.
+</ParamField>
+
+**Headers**
+
+| Header | Required | Description |
+|---|---|---|
+| `Authorization` | Yes | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | Yes | The workspace to disconnect the integration from |
+
+**Response**
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://atmet.ai/api/integrations/hubspot \
+  -H "Authorization: Bearer atmet_your_api_key" \
+  -H "X-Workspace-Id: ws_your_workspace_id"
+```
+
+```javascript JavaScript
+const slug = "hubspot";
+
+const response = await fetch(`https://atmet.ai/api/integrations/${slug}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer atmet_your_api_key",
+    "X-Workspace-Id": "ws_your_workspace_id",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.success); // true
+```
+</CodeGroup>
+
+---
+
+## Error responses
+
+All errors follow the standard Atmet error envelope.
+
+```json
+{
+  "error": {
+    "message": "Integration not found."
+  }
+}
+```
+
+| HTTP status | When it occurs |
+|---|---|
+| `400 Bad Request` | Invalid request body, or attempting to use the connect/test endpoint against an OAuth integration |
+| `401 Unauthorized` | Missing or invalid Bearer token |
+| `403 Forbidden` | Valid token but insufficient workspace permissions |
+| `404 Not Found` | The slug does not match any catalog integration |
+| `500 Internal Server Error` | Unexpected server-side failure |

@@ -1,0 +1,130 @@
+---
+title: "Manage workspace members, roles, and invitations"
+sidebarTitle: "Members"
+description: "View your workspace roster, invite new members by email, manage roles, track usage per member, and revoke or remove access as needed."
+---
+
+The Members settings panel is where you manage who has access to your workspace. From here you can view the full member roster, invite new teammates, review each member's platform role, and track how many tokens each person has consumed. To open Members settings, click **Settings** in the bottom-left corner of the sidebar, then select **Members** from the left panel.
+
+## Understanding platform roles
+
+Every Atmet user has a platform role that determines what they can see and do inside a workspace. Roles are assigned when a member joins and can be updated by Admins and Owners.
+
+<CardGroup cols={2}>
+  <Card title="Super Admin" icon="shield-halved">
+    Full access across the entire Atmet platform. Super Admins can access the Admin Console, provision workspaces, manage all users and roles, and adjust platform-wide settings and usage limits. This role is reserved for internal platform administrators.
+  </Card>
+  <Card title="Admin" icon="shield">
+    Can manage workspace settings and members within the workspaces they are assigned to. Admins can invite new members, update workspace configuration, and view usage data, but cannot delete the workspace or manage billing.
+  </Card>
+  <Card title="Owner" icon="crown">
+    The Owner created the workspace or has been granted ownership. Owners have full control over their workspace — including the ability to manage billing, adjust per-user usage limits, and permanently delete the workspace.
+  </Card>
+  <Card title="Member" icon="user">
+    Standard workspace access. Members can create and run workflows, use AI Core, connect integrations, and collaborate with teammates. They cannot change workspace settings, manage other members, or access billing.
+  </Card>
+</CardGroup>
+
+---
+
+## Viewing the members list
+
+The members list shows everyone currently active in your workspace. Each row displays:
+
+- **Name and email** — the member's display name (or email if no name is set) and their email address
+- **User type** — their platform role, shown as a colored badge
+- **Last login** — the date of their most recent session
+
+Use the **search bar** to filter by name or email. Use the **role filter** dropdown to narrow the list to a specific role — All users, Super Admin, Admin, Owner, or Member.
+
+A seat progress bar at the top of the list shows how many of your workspace's available seats are occupied. The default seat limit is 10.
+
+---
+
+## Inviting a new member
+
+<Steps>
+  <Step title="Open the invite dialog">
+    Click the **Invite** button at the top-right of the members list. The invitation dialog opens.
+  </Step>
+  <Step title="Enter one or more email addresses">
+    Type an email address in the input field. Press **Enter**, **comma**, or **semicolon** to add it to the invite list. You can add multiple addresses at once — paste a comma- or space-separated list and Atmet will parse them automatically. Invalid entries are flagged and skipped.
+  </Step>
+  <Step title="Choose a role">
+    Select the role to assign to the invited members from the **Invite as** dropdown. New invitations are assigned the **Member** role by default.
+  </Step>
+  <Step title="Send the invites">
+    Click **Send invites**. Atmet creates an invitation record for each email address and sends each person an invitation email containing a unique link.
+  </Step>
+  <Step title="Invited member accepts">
+    The recipient clicks the link in their email. They land on an invitation page that shows the workspace name, the role they have been assigned, and who sent the invitation. After accepting, they are added to your workspace and appear in the members list.
+  </Step>
+</Steps>
+
+<Note>
+  Pending invitations expire automatically if the recipient does not accept them within the allotted time. If an invitation expires, send a new one from the Members panel. Atmet prevents duplicate pending invitations — if an active invitation already exists for an email address, the system rejects the duplicate request.
+</Note>
+
+---
+
+## Revoking an invitation
+
+If you sent an invitation by mistake, or the recipient no longer needs access, you can revoke it before it is accepted. Only workspace Admins and Owners can revoke invitations.
+
+To revoke an invitation, open the Members settings panel. Pending invitations appear separately from active members. Locate the invitation and select **Revoke** from the row's action menu. The invitation link is immediately invalidated — clicking it will show an error.
+
+---
+
+## Removing a member
+
+To remove an active member from your workspace:
+
+<Steps>
+  <Step title="Find the member">
+    Use the search bar or scroll the members list to locate the person you want to remove.
+  </Step>
+  <Step title="Open the actions menu">
+    Click the **⋯** (more) icon on the right side of their row.
+  </Step>
+  <Step title="Select Delete user">
+    Click **Delete user**. A confirmation prompt appears.
+  </Step>
+  <Step title="Confirm removal">
+    Confirm the action. The member loses access to the workspace immediately. Their past activity (messages, workflow runs, and uploaded files) remains in the workspace.
+  </Step>
+</Steps>
+
+<Warning>
+  Removing a member is immediate. The person loses access to all workspace resources as soon as you confirm. If you need to re-add them later, you will need to send a new invitation.
+</Warning>
+
+---
+
+## Viewing a member's profile and usage
+
+Click any row in the members list to open that member's profile. The profile view shows:
+
+### User profile
+
+- Display name and role badge
+- Email address and last login date
+
+### Usage statistics
+
+The **Usage of credits** section shows how many tokens this member has consumed, broken down by time period. Use the range dropdown to switch between:
+
+- **All time** — cumulative token usage since the member joined
+- **This month** — token consumption in the current calendar month
+- **This week** — token consumption in the current week
+
+A bar chart visualizes the distribution across the selected period. Token usage counts toward AI Core chat conversations and workflow executions.
+
+Click **← Back to members** to return to the full members list.
+
+---
+
+## Seat limit
+
+Your workspace has a maximum number of seats — by default, 10. The seat counter in the members list shows how many seats are currently occupied. Both active members and pending (not yet accepted) invitations count toward this limit.
+
+If your workspace reaches its seat limit, new invitations will be rejected until a seat becomes available. Contact your workspace Owner to review the seat allocation, or reach out to Atmet support to increase the limit for your plan.

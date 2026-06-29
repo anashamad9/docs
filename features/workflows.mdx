@@ -1,0 +1,160 @@
+---
+title: "Workflows: build and automate multi-step business processes"
+sidebarTitle: "Workflows"
+description: "Design, run, and schedule multi-step automations on a visual canvas. Connect trigger and action nodes to build processes that execute automatically."
+---
+
+Workflows — called automations in the Atmet API — are the executable heart of your workspace. Each workflow is a directed graph of nodes laid out on an infinite visual canvas: one or more **Trigger** nodes define what starts the process, and **Action** nodes define what happens in sequence. You can build workflows by chatting with the AI agent in AI Core, or assemble them manually by adding and connecting nodes directly on the canvas. Either way, the same canvas is where you review, edit, schedule, and publish every automation your team builds.
+
+## The workflow list
+
+Navigate to **Workflows** in the sidebar to see every automation in your workspace. Each entry shows its title, last-updated date, and current status. Use the search bar to filter by name or description, or click a status chip to narrow the list.
+
+| API status | Display label | Meaning |
+|---|---|---|
+| `active` | Running | The workflow is live and executing on its schedule. |
+| `draft` | In review | The workflow has been created but not yet published. |
+| `inactive` | Completed | The workflow has been deactivated or finished its run. |
+
+Click any workflow in the list to open it on the canvas. To delete a workflow, open the **⋯** menu on the right side of its row and select **Delete task**.
+
+## The workflow canvas
+
+The canvas is a large, scrollable workspace where nodes sit at absolute coordinates. The background renders a 12 px dot grid so you can align nodes visually at a glance.
+
+**Navigating the canvas**
+
+- **Pan** — hold Space and drag, or scroll with a trackpad.
+- **Zoom** — pinch on a trackpad or hold Ctrl/⌘ and scroll with the mouse wheel. Zoom range is 0.5× to 2.5×.
+- **Reset view** — press Ctrl+0 / ⌘+0 to animate the canvas back to 100% zoom, centered on the selected node.
+
+<Note>
+  Nodes snap to the canvas grid automatically when you drag them, so everything stays aligned without manual adjustment. To connect two nodes, click an anchor handle (the small circles that appear on the top, bottom, left, and right edges of a selected or hovered node) and drag to any handle on another node. A wire draws between them. Click the **×** button that appears at the midpoint of a wire to delete the connection.
+</Note>
+
+**Keyboard shortcuts**
+
+| Action | Shortcut |
+|---|---|
+| Undo | Ctrl+Z / ⌘+Z |
+| Redo | Ctrl+Y / ⌘+Y |
+| Copy selected node | Ctrl+C / ⌘+C |
+| Paste node | Ctrl+V / ⌘+V |
+| Duplicate selected node | Ctrl+D / ⌘+D |
+| Add new node | Ctrl+N / ⌘+N |
+| Edit selected node | Ctrl+E / ⌘+E |
+| Delete selected node | Backspace or Delete |
+| Reset zoom to selected node | Ctrl+0 / ⌘+0 |
+
+## Node types
+
+Every node is either a **Trigger** or an **Action**. The type badge appears above the top-left corner of the node card.
+
+<CardGroup cols={2}>
+  <Card title="Trigger" icon="bolt">
+    A Trigger node defines the event that starts the workflow. This might be a new email arriving, a Slack message posted, a scheduled time, or any other event from a connected app. Each workflow should have at least one Trigger node.
+  </Card>
+  <Card title="Action" icon="circle-play">
+    An Action node defines something that happens in response to the trigger. Actions perform work — sending a message, creating a record, calling an AI model, or invoking a skill. Chain multiple Action nodes to build multi-step processes.
+  </Card>
+</CardGroup>
+
+To change a node's type, click the type badge (e.g., **Action**) above the node card and select the alternative from the dropdown.
+
+## Node properties
+
+Select a node to open its chat panel at the bottom of the screen. Each node exposes the following properties:
+
+<Accordion title="Prompt">
+  The instruction the AI model follows when this node executes. Describe what the node should do in plain language. The prompt is the core behavioral specification for the node and appears summarized in the node card on the canvas.
+</Accordion>
+
+<Accordion title="Provider and model">
+  The AI provider (e.g., OpenAI) and specific model (e.g., GPT-5.2) that processes the prompt for this node. Different nodes in the same workflow can use different providers and models.
+</Accordion>
+
+<Accordion title="Skills">
+  One or more reusable skills attached to the node. Skills extend what the AI can do — for example, a Lead Qualification skill or a Budget Variance Monitor. Skills are drawn from your workspace's skills library.
+</Accordion>
+
+<Accordion title="Apps">
+  The connected external apps this node interacts with — for example, Gmail, Slack, or HubSpot. Apps must be connected on the **Apps** page before they can be used in a node.
+</Accordion>
+
+<Accordion title="Files">
+  Files attached to this node that the AI can reference when executing the prompt. Click **Files** in the node toolbar to view or manage attachments.
+</Accordion>
+
+To rename a node, double-click its title on the canvas card, type a new name, and press Enter or click the checkmark.
+
+## Adding and removing nodes
+
+- **Add a node below the selected node** — click the **+ Add** button in the toolbar that appears above a selected node.
+- **Add a node at a blank spot** — right-click an empty area of the canvas and choose **New node** from the context menu, or press Ctrl+N / ⌘+N.
+- **Delete a node** — select it and click **Delete** in the node toolbar, or press Backspace / Delete.
+
+## Running a workflow
+
+<Steps>
+  <Step title="Run manually">
+    Click the **Run** button in the workflow toolbar (top of the screen). The workflow executes immediately, stepping through each node in sequence. You can watch execution status update in real time on the canvas.
+  </Step>
+  <Step title="Set a recurring schedule">
+    Open the scheduler and choose **Every** to run the workflow on a fixed interval. Set the value and unit to match your cadence.
+
+    ```json
+    { "mode": "every", "value": 30, "unit": "minutes" }
+    { "mode": "every", "value": 4,  "unit": "hours"   }
+    { "mode": "every", "value": 1,  "unit": "days"    }
+    { "mode": "every", "value": 2,  "unit": "weeks"   }
+    { "mode": "every", "value": 1,  "unit": "months"  }
+    ```
+  </Step>
+  <Step title="Schedule a one-time run">
+    Choose **At** and select an exact date and time. The workflow fires once at that moment and then resets to **Manual only**.
+
+    ```json
+    { "mode": "at", "atISO": "2025-09-01T09:00:00.000Z" }
+    ```
+  </Step>
+  <Step title="Disable the schedule">
+    Set the scheduler to **Off** to return to manual-only execution.
+
+    ```json
+    { "mode": "off" }
+    ```
+  </Step>
+</Steps>
+
+## Publishing a workflow
+
+Every workflow starts in **Draft** state. Publishing makes the workflow live and activates its schedule (if one is set).
+
+- **Draft** — changes are saved but the workflow is not executing on any schedule.
+- **Published** — the workflow is live. Scheduled runs fire automatically at the configured interval.
+- **Unpublished changes** — if you edit a published workflow, an indicator appears in the toolbar to signal that the live version differs from the canvas. Click **Publish** again to push the latest changes.
+
+<Warning>
+  Publishing a workflow with an active schedule causes it to start executing immediately on that schedule. Review the trigger node and run interval before publishing if you are working in a production workspace.
+</Warning>
+
+## Execution log
+
+Open the **Execution Log** from the workflow toolbar to see a full breakdown of the latest run.
+
+The log shows:
+- **Latest run** timestamp and **completion percentage** (done steps ÷ total nodes)
+- **Tokens processed** — total token count across all nodes
+- **Wire count** — number of connections in the current graph
+- **Node run details** — per-node status, provider, owner, and token count
+
+Each node reports one of four execution statuses:
+
+| Status | Meaning |
+|---|---|
+| Idle | The node has not run yet in this execution cycle. |
+| Running | The node is currently being processed (animates in blue). |
+| Success | The node completed without errors (green). |
+| Error | The node encountered a problem (red). The workflow continues to the next node. |
+
+The **Execution timeline** panel in the log records key milestones — workflow start, node processing summary, token totals, publish state, and scheduler setting — giving you a compact audit trail for every run.

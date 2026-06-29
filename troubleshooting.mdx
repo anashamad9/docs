@@ -1,0 +1,298 @@
+---
+title: "Troubleshoot common Atmet issues and errors"
+sidebarTitle: "Troubleshooting"
+description: "Step-by-step fixes for the most common issues in Atmet, covering authentication, integrations, workflows, Skills, and general platform errors."
+---
+
+If something isn't working as expected in Atmet, this page walks you through the most common issues and how to resolve them. Most problems can be fixed in a few steps without needing to contact support. For answers to general questions about how Atmet works, visit the [FAQ](/faq) page first.
+
+<Note>
+  Can't find your issue here? Visit [atmet.ai](https://atmet.ai) to contact support or report a bug through **Settings → Contact Support**.
+</Note>
+
+---
+
+## Authentication issues
+
+<AccordionGroup>
+
+<Accordion title="I can't sign in to my account">
+If you're unable to sign in, work through these checks in order:
+
+<Steps>
+  <Step title="Verify your email and password">
+    Make sure you're entering the correct email address (including any dots or plus signs) and that Caps Lock is not on. Passwords are case-sensitive.
+  </Step>
+  <Step title="Check that your email is verified">
+    Atmet requires a verified email address before you can sign in with a password. If you haven't verified your email, look for a verification message in your inbox (check spam too) and click the confirmation link.
+  </Step>
+  <Step title="Use Forgot Password">
+    If you've forgotten your password or the one you're entering isn't working, click **Forgot password** on the sign-in page. Enter your email and follow the link sent to your inbox to set a new password.
+  </Step>
+  <Step title="Check waitlist approval">
+    Atmet is currently in early access alpha. If you haven't been approved from the waitlist yet, you won't be able to sign in. Join or check your waitlist status at [atmet.ai](https://atmet.ai).
+  </Step>
+</Steps>
+
+<Tip>
+  First-time users who were approved from the waitlist sign in using a one-time passcode (OTP) sent to their email — not a password. Check your inbox for that code if you're signing in for the first time.
+</Tip>
+</Accordion>
+
+<Accordion title="My invitation link isn't working">
+Workspace invitation links expire after a period of time. If you click an invite link and see an error or are redirected away:
+
+1. Ask your workspace admin to navigate to **Settings → Members → Invite** and resend the invitation to your email address.
+2. Use the new link promptly — don't let it sit in your inbox for days before accepting.
+3. Make sure you're not already a member of the workspace under a different email address.
+
+If the problem persists after a fresh invite, contact support.
+</Accordion>
+
+<Accordion title="I didn't receive my verification email">
+If you signed up but haven't received a verification email:
+
+1. **Check your spam or junk folder** — verification emails occasionally get filtered.
+2. **Use the resend option** — on the email verification page shown after sign-up, look for a **Resend verification email** link and click it.
+3. **Confirm you used the right address** — if you signed up with a typo in your email, you'll need to create a new account with the correct address.
+4. **Wait a few minutes** — email delivery can sometimes be delayed by up to 5 minutes.
+
+<Warning>
+  You cannot sign in with a password until your email address has been verified. Don't skip this step.
+</Warning>
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Integration issues
+
+<AccordionGroup>
+
+<Accordion title="OAuth connection fails or redirects to an error page">
+OAuth connections (Gmail, Slack, Notion, GitHub, Jira, Asana, Discord) occasionally fail due to browser state or account mismatches. Try the following:
+
+<Steps>
+  <Step title="Clear browser cookies and cache">
+    Open your browser settings and clear cookies and cached data, then try connecting again. Stale session cookies from the provider can interrupt the OAuth handshake.
+  </Step>
+  <Step title="Use the correct account">
+    Make sure you're signed in to the right account for the provider. For example, if you want to connect a work Gmail account, ensure you're signed in to that Google account in your browser before starting the OAuth flow.
+  </Step>
+  <Step title="Disable browser extensions">
+    Ad blockers, privacy extensions, or cookie managers can sometimes block OAuth redirect URLs. Try the connection in a private/incognito window with extensions disabled.
+  </Step>
+  <Step title="Retry from the Apps page">
+    Navigate to **Apps** in the sidebar, find the integration, and click **Connect** again.
+  </Step>
+</Steps>
+</Accordion>
+
+<Accordion title="My API key is being rejected">
+If you're connecting HubSpot, Salesforce, or X using an API key and the connection fails or shows an authentication error:
+
+**HubSpot:**
+- You must use a **Private App token**, not a legacy API key. Legacy keys are no longer supported by HubSpot.
+- Go to your HubSpot account settings, navigate to **Integrations → Private Apps**, and create a new private app. Copy the access token and paste it into Atmet.
+- Make sure the private app has the required CRM scopes (`crm.objects.contacts.read`, `crm.objects.deals.write`).
+
+**Salesforce:**
+- Ensure the user account tied to your API key has **API access enabled** in Salesforce profile settings.
+- Use an integration user with a Connected App or API-enabled key, not a personal login token.
+
+**X (Twitter):**
+- Generate your key from the [X Developer Portal](https://developer.x.com/).
+- Make sure you've created an app in a project, and that the app has the required `tweet.read` and `tweet.write` permissions.
+
+<Tip>
+  After pasting the key into Atmet, use the **Test** button (where available) before saving to confirm the key is valid.
+</Tip>
+</Accordion>
+
+<Accordion title="An integration shows an 'Error' status">
+If an integration card on the **Apps** page shows an **Error** status, the connection has become invalid — this can happen when an OAuth token expires, an API key is rotated, or provider permissions change.
+
+To fix it:
+
+<Steps>
+  <Step title="Open the Apps page">
+    Click **Apps** in the sidebar to view all integrations.
+  </Step>
+  <Step title="Click the integration card">
+    Select the integration showing the error to open its detail view.
+  </Step>
+  <Step title="Reconnect">
+    Click **Reconnect** (or **Connect** if the integration was fully disconnected) and complete the authorization flow again.
+  </Step>
+</Steps>
+
+After reconnecting, workflows that use this integration will resume using the refreshed credentials.
+</Accordion>
+
+<Accordion title="I want to disconnect an integration">
+To remove an integration from your workspace:
+
+1. Navigate to **Apps** in the sidebar.
+2. Click the integration card you want to disconnect.
+3. Inside the integration detail view, click **Disconnect**.
+
+<Warning>
+  Disconnecting an integration removes it from **all workflows** that use it. Any workflow nodes relying on this integration will stop functioning until you reconnect the app or replace the node with a different integration.
+</Warning>
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Workflow issues
+
+<AccordionGroup>
+
+<Accordion title="My workflow won't publish">
+If you click **Publish** and the workflow doesn't save or shows a validation error, the most likely cause is that one or more nodes are missing a prompt or required configuration.
+
+To fix this:
+
+1. Open the workflow canvas.
+2. Review each node — any node without a prompt defined will be highlighted or show a warning indicator.
+3. Click the node, add a prompt or fill in the required fields, and try publishing again.
+
+Every node in a workflow must have a prompt before the workflow can be published and made active.
+</Accordion>
+
+<Accordion title="My scheduled workflow isn't running automatically">
+If a workflow is published but isn't running on the schedule you expected:
+
+1. Open the workflow and check the **auto-run schedule** setting.
+2. Make sure the schedule is set to a specific interval (hourly, daily, etc.) and is **not** set to **Manual only**.
+3. Confirm the workflow status is **Active** (not In review or Completed).
+4. Check the execution log to see if there were any recent run attempts or errors.
+
+<Note>
+  Scheduled workflows run in the timezone configured in **Settings → General → Time zone**. Make sure that matches the timezone you intended when setting up the schedule.
+</Note>
+</Accordion>
+
+<Accordion title="A workflow node shows an 'Error' execution status">
+When a workflow run fails, the execution log identifies which node encountered the error and provides details about what went wrong.
+
+To investigate:
+
+<Steps>
+  <Step title="Open the workflow">
+    Click the workflow from the Workflows list.
+  </Step>
+  <Step title="Check the execution log">
+    Look for the execution log or run history panel. It shows each run attempt, the status of each node, and error messages for any failed steps.
+  </Step>
+  <Step title="Identify the failing node">
+    Find the node marked with an error status. Common causes include a disconnected integration, an empty required field, or an invalid response from an external app.
+  </Step>
+  <Step title="Fix and re-run">
+    Correct the issue in the node configuration, then trigger a manual run to verify the fix.
+  </Step>
+</Steps>
+</Accordion>
+
+<Accordion title="I can't delete a workflow">
+To delete a workflow from the Workflows list:
+
+1. Navigate to **Workflows** in the sidebar.
+2. Find the workflow you want to remove.
+3. Click the **⋯** (more options) menu on the right side of the workflow row.
+4. Select **Delete task** from the dropdown.
+
+<Warning>
+  Deleting a workflow is permanent. The workflow and its entire history will be removed and cannot be recovered.
+</Warning>
+
+If the delete option doesn't appear or is grayed out, make sure you have the necessary permissions in your workspace. Contact your workspace admin if needed.
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Skills issues
+
+<AccordionGroup>
+
+<Accordion title="A Skill I created isn't appearing in the workflow node picker">
+If you built a Skill but can't find it when setting up a workflow node, the Skill is most likely in **Draft** status rather than **Active**.
+
+To activate it:
+
+1. Click **Skills** in the sidebar.
+2. Find the Skill in the list and open it.
+3. Change its status from **Draft** to **Active**.
+4. Return to your workflow — the Skill should now appear in the node picker.
+
+<Note>
+  Only Skills with an **Active** status are available for use in workflow nodes. Draft Skills are saved but not yet available to workflows.
+</Note>
+</Accordion>
+
+<Accordion title="I can't create a new Skill">
+If the Skill creation flow isn't working as expected:
+
+<Steps>
+  <Step title="Open the Skills page">
+    Click **Skills** in the sidebar to go to the Skills section.
+  </Step>
+  <Step title="Open the Create Skill panel">
+    Click the **Create Skill** button (or the **+** icon) to open the creation panel.
+  </Step>
+  <Step title="Use the /create skill command">
+    Inside the panel, type `/create skill` in the chat prompt to begin guided Skill creation with the AI agent.
+  </Step>
+  <Step title="Fill in required fields">
+    Provide a name, select a Skill type (Reasoning, Data, Automation, or Support), and add a description of what the Skill should do.
+  </Step>
+</Steps>
+
+If the panel doesn't open or you see an error, try refreshing the page and attempting again.
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## General issues
+
+<AccordionGroup>
+
+<Accordion title="My workspace isn't loading">
+If the Atmet interface isn't loading or shows a blank screen:
+
+1. **Refresh the page** — press `Ctrl+R` (Windows/Linux) or `Cmd+R` (Mac) to force a fresh load.
+2. **Switch workspaces** — if you belong to multiple workspaces, use the **workspace switcher** at the top of the sidebar to select a different workspace and then switch back.
+3. **Clear browser cache** — stale cached assets can sometimes prevent the app from loading correctly. Clear your browser cache and reload.
+4. **Try a different browser** — if the issue persists in one browser, test in another (Chrome, Firefox, Safari, Edge) to rule out a browser-specific problem.
+5. **Check your internet connection** — make sure you have a stable connection before trying again.
+
+If none of these steps resolve the issue, contact support.
+</Accordion>
+
+<Accordion title="I've reached my usage limit">
+If you see a message indicating you've hit a token, file, or storage limit:
+
+1. Contact your **workspace admin** and ask them to review the current limits.
+2. Workspace admins can check usage and adjust limits from **Settings → Usage and limits**.
+3. If you're on the Free plan, consider upgrading to Pro or Enterprise for higher allocations. [Contact us](https://atmet.ai) to discuss plan options.
+
+<Note>
+  Usage limits reset monthly. If you're close to your limit near the end of a billing cycle, you may just need to wait for the reset.
+</Note>
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Still need help?
+
+<Card title="Contact Atmet Support" icon="headset" href="https://atmet.ai">
+  If you've worked through the steps above and your issue is still unresolved, our support team is ready to help. Visit [atmet.ai](https://atmet.ai) to open a support request, start a live chat, or report a bug. You can also reach support directly from inside the app at **Settings → Contact Support**.
+</Card>

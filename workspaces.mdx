@@ -1,0 +1,104 @@
+---
+title: "Workspaces: organizing teams and projects in Atmet"
+sidebarTitle: "Workspaces"
+description: "A workspace is Atmet's top-level container for your team's automations, skills, integrations, and members. Learn how to create, configure, and manage workspaces."
+---
+
+A workspace in Atmet is the shared environment where your team's work lives. Every automation you build, every app you connect, every skill you create, and every member you invite belongs to a specific workspace. Think of it as a single, unified space for one team or project — with its own settings, its own connected apps, and its own access controls.
+
+<Note>
+  Each user can belong to multiple workspaces at the same time. A consultant might have one workspace for each client; a product team might keep a staging workspace separate from their production one. Switching between workspaces is instant from the sidebar.
+</Note>
+
+## Creating a workspace
+
+You create your first workspace during the onboarding flow immediately after signing in. To create additional workspaces at any time:
+
+1. Click your workspace name in the top of the left sidebar to open the workspace switcher.
+2. Click **New workspace**.
+3. Enter a **workspace name** — this is visible to all members and appears in notification emails.
+4. Optionally upload a **workspace avatar** (square images work best).
+5. Click **Create workspace**.
+
+Atmet sets you as the **owner** of every workspace you create and immediately switches you into it.
+
+## Switching between workspaces
+
+Open the workspace switcher by clicking your current workspace name in the sidebar. All workspaces you belong to are listed there. Click any workspace to switch to it — Atmet remembers your last active workspace across browser sessions.
+
+<Info>
+  Atmet stores your active workspace locally in the browser. If you sign in from a different device, it defaults to the first workspace in your list until you switch manually.
+</Info>
+
+## Workspace roles
+
+Every workspace member has one of two roles.
+
+| Role | What they can do |
+|------|-----------------|
+| **Owner** | Full control: update workspace settings, invite and remove members, connect and disconnect apps, create and delete workflows and skills, and delete the workspace itself. |
+| **Member** | Can use all connected apps, create and run workflows and skills, and view workspace settings. Cannot change settings, manage other members, or delete the workspace. |
+
+The person who creates a workspace is always its owner. Ownership cannot be transferred in the current alpha release.
+
+<Warning>
+  Only **owners** can invite new members, change member roles, or remove someone from a workspace. If you need to manage your team's access, make sure you are signed in as an owner.
+</Warning>
+
+## Inviting members
+
+To add teammates to your workspace:
+
+1. Open **Workspace Settings** from the sidebar (gear icon or your workspace name menu).
+2. Navigate to the **Members** tab.
+3. Click **Invite member**.
+4. Enter the invitee's **email address** and select a **role** (Owner or Member).
+5. Click **Send invitation**.
+
+Atmet sends the invitee an email with a personalised invitation link. The link is valid until accepted. You can see all pending invitations in the Members tab and cancel any of them before they are accepted.
+
+<Info>
+  Workspaces have a seat limit enforced at the platform level. If you have reached your workspace's seat limit, the invitation button will be disabled. Contact Atmet support to request an increase during the alpha period.
+</Info>
+
+### Removing a member
+
+To remove someone from your workspace, navigate to **Workspace Settings → Members**, find their row, and click **Remove**. Their access is revoked immediately. Any workflows or skills they created remain in the workspace.
+
+## Workspace settings
+
+Owners can update the following settings at any time from **Workspace Settings → General**:
+
+- **Name** — the display name shown in the sidebar, in emails, and in invitation messages.
+- **Avatar** — a square image that represents the workspace visually. Accepts common image formats (PNG, JPG, WebP).
+- **Country** — the country your workspace is based in. This is used for regional defaults and future billing.
+
+Click **Save changes** after editing any field to apply the update.
+
+## Workspace ID and API access
+
+Every workspace has a unique ID (a UUID assigned at creation). When Atmet makes API calls on your behalf — for example, to run a workflow or fetch integration data — it automatically includes your active workspace ID in the `X-Workspace-Id` request header. You do not need to manage this manually when using the Atmet web app.
+
+If you are building on top of Atmet's API directly, include your workspace ID in every authenticated request:
+
+```http
+GET /api/workflows HTTP/1.1
+Authorization: Bearer <your_token>
+X-Workspace-Id: <your_workspace_id>
+```
+
+<Tip>
+  You can find your workspace ID in **Workspace Settings → General** under the workspace name, or by inspecting any authenticated API response from your workspace.
+</Tip>
+
+## Deleting a workspace
+
+Only the workspace owner can delete a workspace. Deletion is permanent and removes all automations, skills, and member associations tied to that workspace.
+
+1. Open **Workspace Settings → General**.
+2. Scroll to the **Danger zone** section.
+3. Click **Delete workspace** and confirm by typing the workspace name.
+
+<Warning>
+  Deleting a workspace cannot be undone. All workflows, skills, and integration connections inside it will be permanently removed. Export or document anything you want to keep before proceeding.
+</Warning>

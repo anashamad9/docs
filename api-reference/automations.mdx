@@ -1,0 +1,436 @@
+---
+title: "Automations API — manage workflows programmatically"
+sidebarTitle: "Automations"
+description: "Create, retrieve, update, and delete automations — the programmable workflows that power your Atmet workspace actions and processes."
+---
+
+The Automations API gives you programmatic control over every workflow in your Atmet workspace. Automations are the engine behind repeatable workplace actions: sequences of steps that can be drafted in conversation, reviewed, activated, and eventually retired. What you see as "Workflows" in the Atmet UI are called **automations** throughout the API. Every request must carry your API key and workspace identifier in the request headers.
+
+---
+
+## Authentication
+
+All endpoints require the following headers:
+
+| Header | Description |
+|---|---|
+| `Authorization` | `Bearer <key>` — your Atmet API key |
+| `X-Workspace-Id` | The unique identifier of your workspace |
+
+---
+
+## The Automation object
+
+Every endpoint that returns an automation yields the following fields.
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the automation (UUID).
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  Human-readable name for the automation.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Optional explanation of what the automation does.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Lifecycle state of the automation. One of `active`, `inactive`, or `draft`.
+</ResponseField>
+
+<ResponseField name="script_key" type="object">
+  A JSON blob containing the structured workflow steps. Populated automatically when the automation is generated from a chat conversation. May be `null` for manually created automations.
+</ResponseField>
+
+<ResponseField name="created_by" type="string" required>
+  UUID of the user who created the automation.
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  ISO 8601 timestamp of when the automation was created.
+</ResponseField>
+
+<ResponseField name="updated_at" type="string" required>
+  ISO 8601 timestamp of the most recent update.
+</ResponseField>
+
+<Note>
+  **Status values map to UI labels:**
+  - `active` → **Running** — the automation is live and executing
+  - `draft` → **In Review** — the automation is being built or awaiting approval
+  - `inactive` → **Completed** — the automation has finished or been switched off
+</Note>
+
+---
+
+## List automations
+
+Retrieve all automations in your workspace, ordered by creation date descending. Filter by status using the optional query parameter.
+
+```
+GET /api/automations
+```
+
+### Query parameters
+
+<ParamField query="status" type="string">
+  Filter results by status. Must be one of `active`, `inactive`, or `draft`. When omitted, all automations are returned.
+</ParamField>
+
+<CodeGroup>
+
+```bash curl
+# List all automations
+curl https://app.atmet.com/api/automations \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>"
+
+# List only active automations
+curl "https://app.atmet.com/api/automations?status=active" \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>"
+```
+
+```javascript JavaScript
+const response = await fetch("https://app.atmet.com/api/automations", {
+  headers: {
+    "Authorization": "Bearer <key>",
+    "X-Workspace-Id": "<workspace-id>",
+  },
+});
+
+const { data } = await response.json();
+console.log(data.automations);
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "data": {
+    "automations": [
+      {
+        "id": "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "Weekly standup digest",
+        "description": "Collects standup updates and emails a summary to the team.",
+        "status": "active",
+        "script_key": null,
+        "created_by": "usr_01j9x...",
+        "created_at": "2025-01-10T09:00:00Z",
+        "updated_at": "2025-01-14T08:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+<ResponseField name="data.automations" type="Automation[]" required>
+  Array of Automation objects belonging to the workspace.
+</ResponseField>
+
+---
+
+## Create an automation
+
+Create a new automation in your workspace. New automations start with a status of `draft`.
+
+```
+POST /api/automations
+```
+
+### Request body
+
+<ParamField body="name" type="string" required>
+  Display name for the automation.
+</ParamField>
+
+<ParamField body="description" type="string">
+  A short explanation of what the automation does. Shown in the Workflows view in the UI.
+</ParamField>
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://app.atmet.com/api/automations \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Weekly standup digest",
+    "description": "Collects standup updates and emails a summary to the team."
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://app.atmet.com/api/automations", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer <key>",
+    "X-Workspace-Id": "<workspace-id>",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Weekly standup digest",
+    description: "Collects standup updates and emails a summary to the team.",
+  }),
+});
+
+const { data } = await response.json();
+console.log(data.automation);
+```
+
+</CodeGroup>
+
+### Response `201`
+
+```json
+{
+  "data": {
+    "automation": {
+      "id": "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Weekly standup digest",
+      "description": "Collects standup updates and emails a summary to the team.",
+      "status": "draft",
+      "script_key": null,
+      "created_by": "usr_01j9x...",
+      "created_at": "2025-01-15T10:30:00Z",
+      "updated_at": "2025-01-15T10:30:00Z"
+    }
+  }
+}
+```
+
+<ResponseField name="data.automation" type="Automation" required>
+  The newly created Automation object.
+</ResponseField>
+
+---
+
+## Get an automation
+
+Retrieve the full details of a single automation, including its `script_key` workflow steps.
+
+```
+GET /api/automations/{id}
+```
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  UUID of the automation to retrieve.
+</ParamField>
+
+<CodeGroup>
+
+```bash curl
+curl https://app.atmet.com/api/automations/aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>"
+```
+
+```javascript JavaScript
+const automationId = "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(
+  `https://app.atmet.com/api/automations/${automationId}`,
+  {
+    headers: {
+      "Authorization": "Bearer <key>",
+      "X-Workspace-Id": "<workspace-id>",
+    },
+  }
+);
+
+const { data } = await response.json();
+console.log(data.automation);
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "data": {
+    "automation": {
+      "id": "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Weekly standup digest",
+      "description": "Collects standup updates and emails a summary to the team.",
+      "status": "active",
+      "script_key": {
+        "steps": [
+          { "action": "collect_messages", "source": "standup-channel" },
+          { "action": "summarise", "model": "gpt-4o" },
+          { "action": "send_email", "to": "team@example.com" }
+        ]
+      },
+      "created_by": "usr_01j9x...",
+      "created_at": "2025-01-10T09:00:00Z",
+      "updated_at": "2025-01-14T08:30:00Z"
+    }
+  }
+}
+```
+
+<ResponseField name="data.automation" type="Automation" required>
+  The full Automation object, including the `script_key` field.
+</ResponseField>
+
+---
+
+## Update an automation
+
+Modify the name, description, or status of an existing automation. You can use this endpoint to promote a draft to active, or mark a running automation as inactive.
+
+```
+PATCH /api/automations/{id}
+```
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  UUID of the automation to update.
+</ParamField>
+
+### Request body
+
+<ParamField body="name" type="string">
+  New display name for the automation.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description of what the automation does.
+</ParamField>
+
+<ParamField body="status" type="string">
+  New lifecycle status. Must be one of `active`, `inactive`, or `draft`.
+</ParamField>
+
+<CodeGroup>
+
+```bash curl
+curl -X PATCH \
+  https://app.atmet.com/api/automations/aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "active"}'
+```
+
+```javascript JavaScript
+const automationId = "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+const response = await fetch(
+  `https://app.atmet.com/api/automations/${automationId}`,
+  {
+    method: "PATCH",
+    headers: {
+      "Authorization": "Bearer <key>",
+      "X-Workspace-Id": "<workspace-id>",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status: "active" }),
+  }
+);
+
+const { data } = await response.json();
+console.log(data.automation);
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "data": {
+    "automation": {
+      "id": "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Weekly standup digest",
+      "description": "Collects standup updates and emails a summary to the team.",
+      "status": "active",
+      "script_key": null,
+      "created_by": "usr_01j9x...",
+      "created_at": "2025-01-10T09:00:00Z",
+      "updated_at": "2025-01-15T14:00:00Z"
+    }
+  }
+}
+```
+
+<ResponseField name="data.automation" type="Automation" required>
+  The updated Automation object.
+</ResponseField>
+
+---
+
+## Delete an automation
+
+Permanently remove an automation from your workspace.
+
+```
+DELETE /api/automations/{id}
+```
+
+### Path parameters
+
+<ParamField path="id" type="string" required>
+  UUID of the automation to delete.
+</ParamField>
+
+<CodeGroup>
+
+```bash curl
+curl -X DELETE \
+  https://app.atmet.com/api/automations/aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+  -H "Authorization: Bearer <key>" \
+  -H "X-Workspace-Id: <workspace-id>"
+```
+
+```javascript JavaScript
+const automationId = "aut_a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+
+await fetch(`https://app.atmet.com/api/automations/${automationId}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer <key>",
+    "X-Workspace-Id": "<workspace-id>",
+  },
+});
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+{
+  "data": {
+    "success": true
+  }
+}
+```
+
+---
+
+## Error responses
+
+All error responses follow the same envelope shape:
+
+```json
+{
+  "error": {
+    "message": "Automation not found."
+  }
+}
+```
+
+| HTTP status | When it occurs |
+|---|---|
+| `400` | Invalid JSON body or a validation failure |
+| `401` | Missing or invalid API key |
+| `404` | Automation not found |
+| `500` | Unexpected server error |
